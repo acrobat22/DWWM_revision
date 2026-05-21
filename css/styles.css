@@ -193,8 +193,8 @@ body {
   flex-shrink: 0;
   margin-top: 1px;
 }
-.p1 .qnum { background: #2E75B6; }
-.p2 .qnum { background: #0D7A8A; }
+.p1 .qnum { background: var(--red); }
+.p2 .qnum { background: var(--red-dark); }
 
 .qtxt {
   font-size: 15px;

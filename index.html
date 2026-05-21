@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DWWM — Entraînement Oral</title>
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" href="favicon.ico" />
 </head>
 <body>
 
@@ -62,6 +63,12 @@
     <button class="btn btn-secondary" onclick="App.importXML()">⬆ Import XML</button>
     <input type="file" id="xml-file-input" accept=".xml"
            class="hidden" onchange="App.handleXMLImport(event)" />
+    <button class="btn btn-secondary"
+            title="Génère le code JS du Projet 1 à coller dans js/data-p1.js"
+            onclick="App.copierCodeJS('p1')">📋 Copier JS — P1</button>
+    <button class="btn btn-secondary"
+            title="Génère le code JS du Projet 2 à coller dans js/data-p2.js"
+            onclick="App.copierCodeJS('p2')">📋 Copier JS — P2</button>
 
     <!-- Filtres admin -->
     <select class="filter-sel" id="a-proj">
@@ -90,14 +97,14 @@
     <div class="modal-body">
       <div class="field-row">
         <div class="field">
-          <label>Projet *</label>
+          <label for="m-proj">Projet *</label>
           <select id="m-proj">
             <option value="p1">Projet 1 — Django</option>
             <option value="p2">Projet 2 — Node.js</option>
           </select>
         </div>
         <div class="field">
-          <label>Fréquence *</label>
+          <label for="m-freq">Fréquence *</label>
           <select id="m-freq">
             <option value="hot">🔴 Très fréquente</option>
             <option value="med">🔵 Technique</option>
@@ -108,24 +115,24 @@
 
       <div class="field-row">
         <div class="field">
-          <label>Catégorie *</label>
+          <label for="m-cat">Catégorie *</label>
           <input type="text" id="m-cat" placeholder="ex : Sécurité" list="cat-datalist" />
           <datalist id="cat-datalist"></datalist>
         </div>
         <div class="field">
-          <label>Thématique</label>
+          <label for="m-them">Thématique</label>
           <input type="text" id="m-them" placeholder="ex : Node.js, Tests…" list="them-datalist" />
           <datalist id="them-datalist"></datalist>
         </div>
       </div>
 
       <div class="field">
-        <label>Question * (HTML autorisé : &lt;code&gt;, &lt;b&gt;)</label>
+        <label for="m-question">Question * (HTML autorisé : &lt;code&gt;, &lt;b&gt;)</label>
         <input type="text" id="m-question" placeholder="Qu'est-ce que…" />
       </div>
 
       <div class="field">
-        <label>Réponse * (HTML : &lt;p&gt;, &lt;pre&gt;, &lt;code&gt;, &lt;b&gt;, &lt;ul&gt;&lt;li&gt;)</label>
+        <label for="m-answer">Réponse * (HTML : &lt;p&gt;, &lt;pre&gt;, &lt;code&gt;, &lt;b&gt;, &lt;ul&gt;&lt;li&gt;)</label>
         <textarea id="m-answer"
           placeholder="&lt;p&gt;Votre réponse…&lt;/p&gt;&#10;&lt;pre&gt;// code exemple&lt;/pre&gt;"></textarea>
       </div>
@@ -149,11 +156,11 @@
 
     <div class="modal-body">
       <div class="field">
-        <label>Identifiant</label>
+        <label for="login-user">Identifiant</label>
         <input type="text" id="login-user" placeholder="Identifiant" autocomplete="username" />
       </div>
       <div class="field">
-        <label>Mot de passe</label>
+        <label for="login-pwd">Mot de passe</label>
         <input type="password" id="login-pwd" placeholder="Mot de passe" autocomplete="current-password" />
       </div>
       <p id="login-error"

@@ -9,79 +9,91 @@ import { questions, addQuestion, updateQuestion, newId } from './store.js';
 import { showToast } from './utils.js';
 import { renderAdmin } from './admin.js';
 
-/** Id de la question en cours d'édition, null si création. */
-let editingId = null;
+/** Identifiant de la question en cours d'édition, null si création. */
+let questionEnCoursEditionId = null;
 
 /** Initialise les événements du modal. */
 export function initModal() {
-  // Fermer en cliquant sur l'overlay
-  document.getElementById('modal-overlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  document.getElementById('modal-overlay').addEventListener('click', evenement => {
+    if (evenement.target === document.getElementById('modal-overlay')) closeModal();
   });
 }
 
 /**
- * Ouvre le modal.
- * @param {string|null} id - Id de la question à éditer, null pour une création.
+ * Ouvre le modal en mode création ou édition.
+ * @param {string|null} questionId - Id de la question à éditer, null pour une création.
  */
-export function openModal(id = null) {
-  editingId = id;
-  const q = id ? questions.find(x => x.id === id) : null;
+export function openModal(questionId = null) {
+  questionEnCoursEditionId = questionId;
+  const questionExistante = questionId ? questions.find(q => q.id === questionId) : null;
 
-  document.getElementById('modal-title').textContent = q ? 'Modifier la question' : 'Nouvelle question';
-  document.getElementById('m-proj').value     = q?.proj       || 'p1';
-  document.getElementById('m-freq').value     = q?.freq       || 'hot';
-  document.getElementById('m-cat').value      = q?.category   || '';
-  document.getElementById('m-them').value     = q?.thematique || '';
-  document.getElementById('m-question').value = q?.question   || '';
-  document.getElementById('m-answer').value   = q?.answer     || '';
+  document.getElementById('modal-title').textContent =
+    questionExistante ? 'Modifier la question' : 'Nouvelle question';
+
+  document.getElementById('m-proj').value     = questionExistante?.proj       || 'p1';
+  document.getElementById('m-freq').value     = questionExistante?.freq       || 'hot';
+  document.getElementById('m-cat').value      = questionExistante?.category   || '';
+  document.getElementById('m-them').value     = questionExistante?.thematique || '';
+  document.getElementById('m-question').value = questionExistante?.question   || '';
+  document.getElementById('m-answer').value   = questionExistante?.answer     || '';
 
   // Alimenter les datalists avec les valeurs existantes
-  const allCats  = [...new Set(questions.map(x => x.category).filter(Boolean))];
-  const allThems = [...new Set(questions.map(x => x.thematique).filter(Boolean))];
-  document.getElementById('cat-datalist').innerHTML  = allCats.map(c => `<option value="${c}">`).join('');
-  document.getElementById('them-datalist').innerHTML = allThems.map(t => `<option value="${t}">`).join('');
+  const toutesLesCategories   = [...new Set(questions.map(q => q.category).filter(Boolean))];
+  const toutesLesThematiques  = [...new Set(questions.map(q => q.thematique).filter(Boolean))];
+
+  document.getElementById('cat-datalist').innerHTML =
+    toutesLesCategories.map(categorie => `<option value="${categorie}">`).join('');
+
+  document.getElementById('them-datalist').innerHTML =
+    toutesLesThematiques.map(thematique => `<option value="${thematique}">`).join('');
 
   document.getElementById('modal-overlay').classList.remove('hidden');
   document.getElementById('m-question').focus();
 }
 
-/** Ferme le modal et réinitialise l'état. */
+/** Ferme le modal et réinitialise l'état d'édition. */
 export function closeModal() {
   document.getElementById('modal-overlay').classList.add('hidden');
-  editingId = null;
+  questionEnCoursEditionId = null;
 }
 
 /**
- * Valide le formulaire, crée ou met à jour la question, puis ferme.
- * Appelé par le bouton "Enregistrer" du modal.
+ * Valide le formulaire, crée ou met à jour la question, puis ferme le modal.
+ * Appelé par le bouton "Enregistrer".
  */
 export function saveQuestion() {
-  const proj     = document.getElementById('m-proj').value.trim();
-  const freq     = document.getElementById('m-freq').value.trim();
-  const category = document.getElementById('m-cat').value.trim();
-  const them     = document.getElementById('m-them').value.trim();
-  const question = document.getElementById('m-question').value.trim();
-  const answer   = document.getElementById('m-answer').value.trim();
+  const projetSelectionne  = document.getElementById('m-proj').value.trim();
+  const niveauFrequence    = document.getElementById('m-freq').value.trim();
+  const categorieQuestion  = document.getElementById('m-cat').value.trim();
+  const thematiqueQuestion = document.getElementById('m-them').value.trim();
+  const texteQuestion      = document.getElementById('m-question').value.trim();
+  const texteReponse       = document.getElementById('m-answer').value.trim();
 
-  if (!proj || !category || !question || !answer) {
+  if (!projetSelectionne || !categorieQuestion || !texteQuestion || !texteReponse) {
     showToast('⚠️ Remplissez tous les champs obligatoires (*).');
     return;
   }
 
-  if (editingId) {
-    const ok = updateQuestion(editingId, { proj, freq, category, thematique: them, question, answer });
-    showToast(ok ? '✅ Question modifiée.' : '❌ Question introuvable.');
+  if (questionEnCoursEditionId) {
+    const modificationReussie = updateQuestion(questionEnCoursEditionId, {
+      proj:       projetSelectionne,
+      freq:       niveauFrequence,
+      category:   categorieQuestion,
+      thematique: thematiqueQuestion,
+      question:   texteQuestion,
+      answer:     texteReponse,
+    });
+    showToast(modificationReussie ? '✅ Question modifiée.' : '❌ Question introuvable.');
   } else {
     addQuestion({
-      id:         newId(proj),
-      proj,
+      id:         newId(projetSelectionne),
+      proj:       projetSelectionne,
       num:        0,
-      category,
-      thematique: them,
-      question,
-      answer,
-      freq,
+      category:   categorieQuestion,
+      thematique: thematiqueQuestion,
+      question:   texteQuestion,
+      answer:     texteReponse,
+      freq:       niveauFrequence,
     });
     showToast('✅ Question ajoutée.');
   }
