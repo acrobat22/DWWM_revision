@@ -11,8 +11,10 @@
 <!-- ═══ BARRE DE NAVIGATION ═══ -->
 <nav class="nav">
   <span class="nav-title">📚 DWWM Oral</span>
-  <button class="nav-btn active" id="btn-quiz"  onclick="App.showPage('quiz')">Quiz</button>
-  <button class="nav-btn"        id="btn-admin" onclick="App.showPage('admin')">⚙️ Admin</button>
+  <button class="nav-btn active" id="btn-quiz"   onclick="App.showPage('quiz')">Quiz</button>
+  <button class="nav-btn"        id="btn-admin"  onclick="App.showPage('admin')">⚙️ Admin</button>
+  <button class="nav-btn hidden" id="btn-logout" onclick="App.logout()"
+          style="color:#e35336;border-color:#e35336">Déconnexion</button>
 </nav>
 
 <!-- ═══ PAGE QUIZ ═══ -->
@@ -132,6 +134,36 @@
     <div class="modal-foot">
       <button class="btn btn-secondary" onclick="App.closeModal()">Annuler</button>
       <button class="btn btn-primary"   onclick="App.saveQuestion()">Enregistrer</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ OVERLAY DE CONNEXION ADMIN ═══ -->
+<div class="overlay" id="login-overlay">
+  <div class="modal" id="login-modal" style="max-width:380px">
+
+    <div class="modal-head">
+      <h2>Accès administration</h2>
+    </div>
+
+    <div class="modal-body">
+      <div class="field">
+        <label>Identifiant</label>
+        <input type="text" id="login-user" placeholder="Identifiant" autocomplete="username" />
+      </div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" id="login-pwd" placeholder="Mot de passe" autocomplete="current-password" />
+      </div>
+      <p id="login-error"
+         style="font-size:13px;color:#e35336;min-height:18px;margin-top:4px"></p>
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="App.showPage('quiz')">Annuler</button>
+      <button class="btn btn-primary" id="login-submit"
+              onclick="App.submitLogin()">Connexion</button>
     </div>
 
   </div>
