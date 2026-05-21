@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DWWM — Entraînement Oral</title>
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" href="favicon.ico" />
 </head>
 <body>
 
@@ -24,6 +25,7 @@
   <div class="proj-tabs">
     <button class="ptab active" id="ptab-p1">Projet 1 — Django</button>
     <button class="ptab"        id="ptab-p2">Projet 2 — Node.js / Socket.io</button>
+    <button class="ptab"        id="ptab-p3">Transversales</button>
   </div>
 
   <!-- Filtres -->
@@ -68,12 +70,16 @@
     <button class="btn btn-secondary"
             title="Génère le code JS du Projet 2 à coller dans js/data-p2.js"
             onclick="App.copierCodeJS('p2')">📋 Copier JS — P2</button>
+    <button class="btn btn-secondary"
+            title="Génère le code JS des questions transversales à coller dans js/data-p3.js"
+            onclick="App.copierCodeJS('p3')">📋 Copier JS — P3</button>
 
     <!-- Filtres admin -->
     <select class="filter-sel" id="a-proj">
       <option value="">Tous les projets</option>
       <option value="p1">Projet 1 — Django</option>
       <option value="p2">Projet 2 — Node.js</option>
+      <option value="p3">Transversales</option>
     </select>
     <input class="search-input" id="a-search"
            placeholder="Rechercher…" style="max-width:220px" />
@@ -100,6 +106,7 @@
           <select id="m-proj">
             <option value="p1">Projet 1 — Django</option>
             <option value="p2">Projet 2 — Node.js</option>
+            <option value="p3">Transversales</option>
           </select>
         </div>
         <div class="field">

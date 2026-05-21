@@ -7,15 +7,18 @@
 
 import { DATA_P1 } from './data-p1.js';
 import { DATA_P2 } from './data-p2.js';
+import { DATA_P3 } from './data-p3.js';
 
-const CLE_STOCKAGE_LOCAL = 'dwwm_questions_v3';
+const CLE_STOCKAGE_LOCAL = 'dwwm_questions_v4';
 
 /** @type {Array<Object>} Toutes les questions actives en mémoire. */
 export let questions = [];
 
 /**
  * Charge les données depuis localStorage.
- * Utilise les données initiales si le stockage est vide ou corrompu.
+ * Si le localStorage contient des données d'une version antérieure
+ * (sans les questions P3), les données manquantes sont ajoutées
+ * depuis les fichiers data initiaux sans écraser les modifications de l'utilisateur.
  */
 export function loadData() {
   try {
@@ -24,13 +27,31 @@ export function loadData() {
       const questionsDeserialisees = JSON.parse(donneesStockees);
       if (Array.isArray(questionsDeserialisees) && questionsDeserialisees.length > 0) {
         questions = questionsDeserialisees;
+
+        // Migration : ajouter les projets absents du localStorage
+        // (cas d'une mise à jour de l'application avec de nouvelles données)
+        const projetsPresents = new Set(questions.map(q => q.proj));
+
+        if (!projetsPresents.has('p3')) {
+          questions = [...questions, ...DATA_P3.map(question => ({ ...question }))];
+          saveData();
+        }
+        if (!projetsPresents.has('p2')) {
+          questions = [...questions, ...DATA_P2.map(question => ({ ...question }))];
+          saveData();
+        }
+        if (!projetsPresents.has('p1')) {
+          questions = [...questions, ...DATA_P1.map(question => ({ ...question }))];
+          saveData();
+        }
+
         return;
       }
     }
   } catch (erreurLectureStockage) {
     console.warn('[store] localStorage illisible, rechargement depuis les données initiales', erreurLectureStockage);
   }
-  questions = [...DATA_P1, ...DATA_P2].map(question => ({ ...question }));
+  questions = [...DATA_P1, ...DATA_P2, ...DATA_P3].map(question => ({ ...question }));
   saveData();
 }
 

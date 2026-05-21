@@ -15,3 +15,4 @@ Vous sauvegardez le fichier et le poussez sur GitHub.
 Désormais la question fait partie des données initiales — elle sera là même sur un nouvel appareil ou après vidage du cache.
 
 Le fallback : si vous êtes sur http:// sans localhost (certains serveurs locaux), l'API navigator.clipboard est bloquée par le navigateur pour des raisons de sécurité. Dans ce cas, une modale s'ouvre avec le code dans une zone de texte — vous sélectionnez tout et copiez manuellement.
+

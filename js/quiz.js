@@ -30,6 +30,9 @@ export function initQuiz() {
   document.getElementById('ptab-p2').addEventListener('click', evenement =>
     changerDeProjet('p2', evenement.currentTarget)
   );
+  document.getElementById('ptab-p3').addEventListener('click', evenement =>
+    changerDeProjet('p3', evenement.currentTarget)
+  );
   document.getElementById('q-search').addEventListener('input', renderQuiz);
   document.getElementById('f-cat').addEventListener('change', renderQuiz);
   document.getElementById('f-them').addEventListener('change', renderQuiz);

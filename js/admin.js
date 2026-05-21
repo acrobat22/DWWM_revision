@@ -63,7 +63,9 @@ export function renderAdmin() {
 function construireLigneTableau(question) {
   const badgeProjet = question.proj === 'p1'
     ? `<span class="proj-badge badge-p1">P1</span>`
-    : `<span class="proj-badge badge-p2">P2</span>`;
+    : question.proj === 'p2'
+      ? `<span class="proj-badge badge-p2">P2</span>`
+      : `<span class="proj-badge badge-p3">P3</span>`;
 
   const badgeFrequence = `<span class="tag ${CLASSE_FREQUENCE[question.freq] || 'tag-easy'}" style="margin:0">
     ${ETIQUETTE_FREQUENCE[question.freq] || ''}
@@ -166,8 +168,8 @@ export async function copierCodeJS(projetCible) {
     return;
   }
 
-  const nomConstante = projetCible === 'p1' ? 'DATA_P1' : 'DATA_P2';
-  const nomFichier   = projetCible === 'p1' ? 'data-p1.js' : 'data-p2.js';
+  const nomConstante = projetCible === 'p1' ? 'DATA_P1' : projetCible === 'p2' ? 'DATA_P2' : 'DATA_P3';
+  const nomFichier   = projetCible === 'p1' ? 'data-p1.js' : projetCible === 'p2' ? 'data-p2.js' : 'data-p3.js';
 
   const lignesJS = questionsProjet.map(serialiserQuestionEnJS).join(',\n');
 

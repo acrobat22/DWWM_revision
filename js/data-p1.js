@@ -1,5 +1,5 @@
 export const DATA_P1 = [
-  {id:"p1_1",proj:"p1",num:1,category:`Modèles & Base de données`,thematique:"",question:`Comment créer des relations entre les modèles Django ?`,answer:`<p>Django propose 3 types de relations :</p>
+  {id:"p1_1",proj:"p1",num:1,category:`Modèles & Base de données`,thematique:"Django",question:`Comment créer des relations entre les modèles Django ?`,answer:`<p>Django propose 3 types de relations :</p>
 <pre>class Direction(models.Model):
     nom = models.CharField(max_length=100)
 
@@ -15,7 +15,7 @@ class Materiel(models.Model):
 <b>ManyToManyField</b> (N↔N) : un matériel a plusieurs logiciels, un logiciel est sur plusieurs matériels.<br/>
 <b>OneToOneField</b> (1→1) : une seule valeur liée (ex : profil utilisateur).<br/><br/>
 <b>on_delete</b> définit ce qui se passe si l'objet lié est supprimé : <code>CASCADE</code> supprime en cascade, <code>PROTECT</code> interdit la suppression, <code>SET_NULL</code> met à null.</p>`,freq:"hot",},
-  {id:"p1_2",proj:"p1",num:2,category:`Modèles & Base de données`,thematique:"",question:`Qu'est-ce qu'un mixin et pourquoi l'utilisez-vous ?`,answer:`<p>Un mixin est une classe qui apporte des fonctionnalités réutilisables par héritage multiple, sans être une classe complète elle-même.</p>
+  {id:"p1_2",proj:"p1",num:2,category:`Modèles & Base de données`,thematique:"Django",question:`Qu'est-ce qu'un mixin et pourquoi l'utilisez-vous ?`,answer:`<p>Un mixin est une classe qui apporte des fonctionnalités réutilisables par héritage multiple, sans être une classe complète elle-même.</p>
 <pre>class StructureFilterMixin:
     """Mixin : filtre automatiquement les données par structure."""
     def get_queryset(self, request):
@@ -28,7 +28,7 @@ class Materiel(models.Model):
 class MaterielAdmin(StructureFilterMixin, admin.ModelAdmin): ...
 class UtilisateurAdmin(StructureFilterMixin, admin.ModelAdmin): ...</pre>
 <p>Sans mixin, il faudrait copier-coller ce code dans chaque classe d'admin. Avec le mixin, on l'écrit une seule fois et on l'hérite partout.</p>`,freq:"hot",},
-  {id:"p1_3",proj:"p1",num:3,category:`Modèles & Base de données`,thematique:"",question:`Qu'est-ce qu'une méthode statique ? Pourquoi l'utiliser dans votre service ?`,answer:`<p>Une méthode statique (<code>@staticmethod</code>) appartient à la classe mais ne dépend ni de l'instance (<code>self</code>) ni de la classe (<code>cls</code>). On l'appelle directement sur la classe.</p>
+  {id:"p1_3",proj:"p1",num:3,category:`Modèles & Base de données`,thematique:"Django",question:`Qu'est-ce qu'une méthode statique ? Pourquoi l'utiliser dans votre service ?`,answer:`<p>Une méthode statique (<code>@staticmethod</code>) appartient à la classe mais ne dépend ni de l'instance (<code>self</code>) ni de la classe (<code>cls</code>). On l'appelle directement sur la classe.</p>
 <pre>class MaterielService:
     @staticmethod
     def get_historique_prets(materiel):
@@ -38,7 +38,7 @@ class UtilisateurAdmin(StructureFilterMixin, admin.ModelAdmin): ...</pre>
 # Appel : pas besoin d'instancier la classe
 historique = MaterielService.get_historique_prets(mon_materiel)</pre>
 <p>On l'utilise quand la logique est liée conceptuellement à la classe mais ne modifie aucun attribut. Cela rend le code plus lisible et testable.</p>`,freq:"hot",},
-  {id:"p1_4",proj:"p1",num:4,category:`Modèles & Base de données`,thematique:"",question:`Qu'est-ce qu'un signal Django ? Donnez un exemple concret.`,answer:`<p>Un signal est un mécanisme d'événement : quand une action se produit (ex : sauvegarde d'un objet), Django "émet" un signal, et les fonctions qui "écoutent" ce signal sont exécutées automatiquement.</p>
+  {id:"p1_4",proj:"p1",num:4,category:`Modèles & Base de données`,thematique:"Django",question:`Qu'est-ce qu'un signal Django ? Donnez un exemple concret.`,answer:`<p>Un signal est un mécanisme d'événement : quand une action se produit (ex : sauvegarde d'un objet), Django "émet" un signal, et les fonctions qui "écoutent" ce signal sont exécutées automatiquement.</p>
 <pre>from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
@@ -54,7 +54,7 @@ def cloture_affectation_precedente(sender, instance, **kwargs):
             ancienne.date_fin = instance.date_debut
             ancienne.save()</pre>
 <p>Ici le signal clôture l'ancienne affectation sans que l'utilisateur ait à y penser. C'est de la logique automatique et transparente.</p>`,freq:"hot",},
-  {id:"p1_5",proj:"p1",num:5,category:`Modèles & Base de données`,thematique:"",question:`Qu'est-ce que <code>select_related()</code> et pourquoi l'utilisez-vous ?`,answer:`<p><code>select_related()</code> résout le problème N+1 : sans lui, Django fait une requête SQL par objet lié. Avec lui, il fait un seul JOIN SQL.</p>
+  {id:"p1_5",proj:"p1",num:5,category:`Modèles & Base de données`,thematique:"Django",question:`Qu'est-ce que <code>select_related()</code> et pourquoi l'utilisez-vous ?`,answer:`<p><code>select_related()</code> résout le problème N+1 : sans lui, Django fait une requête SQL par objet lié. Avec lui, il fait un seul JOIN SQL.</p>
 <pre># Sans select_related → 1 requête pour les prêts + 1 par utilisateur
 for pret in Pret.objects.all():
     print(pret.utilisateur.nom)  # requête SQL à chaque itération !
@@ -63,7 +63,7 @@ for pret in Pret.objects.all():
 for pret in Pret.objects.select_related('utilisateur'):
     print(pret.utilisateur.nom)  # déjà en mémoire</pre>
 <p>Utilisez <code>select_related</code> pour les FK/OneToOne, et <code>prefetch_related</code> pour les ManyToMany.</p>`,freq:"med",},
-  {id:"p1_6",proj:"p1",num:6,category:`Modèles & Base de données`,thematique:"",question:`Qu'est-ce qu'une transaction atomique et pourquoi en avez-vous besoin ?`,answer:`<p>Une transaction atomique garantit que plusieurs opérations en base de données réussissent toutes ensemble, ou qu'aucune n'est appliquée (tout ou rien).</p>
+  {id:"p1_6",proj:"p1",num:6,category:`Modèles & Base de données`,thematique:"Django",question:`Qu'est-ce qu'une transaction atomique et pourquoi en avez-vous besoin ?`,answer:`<p>Une transaction atomique garantit que plusieurs opérations en base de données réussissent toutes ensemble, ou qu'aucune n'est appliquée (tout ou rien).</p>
 <pre>from django.db import transaction
 
 with transaction.atomic():
@@ -72,7 +72,7 @@ with transaction.atomic():
     pret.est_rendu = True
     pret.save()               # ...cette ligne n'est pas exécutée non plus</pre>
 <p>Dans le retour de prêt, si la mise à jour du statut réussit mais que la sauvegarde du prêt échoue, on aurait un état incohérent. La transaction atomique évite ça.</p>`,freq:"hot",},
-  {id:"p1_7",proj:"p1",num:7,category:`Modèles & Base de données`,thematique:"",question:`Qu'est-ce que <code>select_for_update()</code> et pourquoi l'utilisez-vous pour les codes matériel ?`,answer:`<p><code>select_for_update()</code> pose un verrou sur les lignes lues, empêchant d'autres transactions de les modifier jusqu'à la fin. Cela évite les doublons en accès concurrent.</p>
+  {id:"p1_7",proj:"p1",num:7,category:`Modèles & Base de données`,thematique:"Django",question:`Qu'est-ce que <code>select_for_update()</code> et pourquoi l'utilisez-vous pour les codes matériel ?`,answer:`<p><code>select_for_update()</code> pose un verrou sur les lignes lues, empêchant d'autres transactions de les modifier jusqu'à la fin. Cela évite les doublons en accès concurrent.</p>
 <pre>with transaction.atomic():
     # Verrouille toutes les lignes PC avant de lire la séquence max
     qs = Materiel.objects.select_for_update().filter(type_materiel=type_pc)
@@ -80,7 +80,7 @@ with transaction.atomic():
     prochain = 1 if dernier is None else dernier.sequence + 1
     instance.code = f"PC-{prochain:02d}"</pre>
 <p>Sans ce verrou, deux créations simultanées pourraient lire la même séquence et générer deux fois <code>PC-01</code>.</p>`,freq:"med",},
-  {id:"p1_8",proj:"p1",num:8,category:`Modèles & Base de données`,thematique:"",question:`Quelle est la différence entre <code>clean()</code> et <code>save()</code> dans un modèle ?`,answer:`<p><code>clean()</code> valide les données avant de les enregistrer (lève une <code>ValidationError</code> si les données sont incorrectes). <code>save()</code> écrit en base de données.</p>
+  {id:"p1_8",proj:"p1",num:8,category:`Modèles & Base de données`,thematique:"Django",question:`Quelle est la différence entre <code>clean()</code> et <code>save()</code> dans un modèle ?`,answer:`<p><code>clean()</code> valide les données avant de les enregistrer (lève une <code>ValidationError</code> si les données sont incorrectes). <code>save()</code> écrit en base de données.</p>
 <pre>class Pret(models.Model):
     def clean(self):
         # Validation : la date de restitution doit être après la date de prêt
@@ -93,7 +93,7 @@ with transaction.atomic():
     def save(self, *args, **kwargs):
         self.full_clean()  # Appelle clean() avant d'écrire
         super().save(*args, **kwargs)</pre>`,freq:"med",},
-  {id:"p1_9",proj:"p1",num:9,category:`Modèles & Base de données`,thematique:"",question:`Qu'est-ce qu'une <code>CheckConstraint</code> et pourquoi l'utilisez-vous en plus de <code>clean()</code> ?`,answer:`<p>Une <code>CheckConstraint</code> est une contrainte directement en base de données (SQL CHECK). Elle garantit l'intégrité même si quelqu'un insère des données sans passer par Django (import CSV, accès direct SQL).</p>
+  {id:"p1_9",proj:"p1",num:9,category:`Modèles & Base de données`,thematique:"Django",question:`Qu'est-ce qu'une <code>CheckConstraint</code> et pourquoi l'utilisez-vous en plus de <code>clean()</code> ?`,answer:`<p>Une <code>CheckConstraint</code> est une contrainte directement en base de données (SQL CHECK). Elle garantit l'intégrité même si quelqu'un insère des données sans passer par Django (import CSV, accès direct SQL).</p>
 <pre>class Utilisateur(models.Model):
     service   = models.ForeignKey(Service,   null=True, blank=True, ...)
     direction = models.ForeignKey(Direction, null=True, blank=True, ...)
@@ -109,7 +109,7 @@ with transaction.atomic():
             )
         ]</pre>
 <p><code>clean()</code> protège via Python (côté applicatif). <code>CheckConstraint</code> protège au niveau BDD. Les deux ensemble = double protection.</p>`,freq:"med",},
-  {id:"p1_10",proj:"p1",num:10,category:`ORM & Requêtes`,thematique:"",question:`Comment fonctionne l'ORM Django ? Pourquoi protège-t-il des injections SQL ?`,answer:`<p>L'ORM (Object-Relational Mapper) traduit les objets Python en requêtes SQL. Il utilise des requêtes paramétrées : les valeurs ne sont jamais insérées directement dans le SQL, elles sont toujours passées séparément au moteur de BDD.</p>
+  {id:"p1_10",proj:"p1",num:10,category:`ORM & Requêtes`,thematique:"Django",question:`Comment fonctionne l'ORM Django ? Pourquoi protège-t-il des injections SQL ?`,answer:`<p>L'ORM (Object-Relational Mapper) traduit les objets Python en requêtes SQL. Il utilise des requêtes paramétrées : les valeurs ne sont jamais insérées directement dans le SQL, elles sont toujours passées séparément au moteur de BDD.</p>
 <pre># Ce que vous écrivez en Python :
 Materiel.objects.filter(statut='en_service', structure=ma_structure)
 
@@ -117,7 +117,7 @@ Materiel.objects.filter(statut='en_service', structure=ma_structure)
 # SELECT * FROM materiel WHERE statut = ? AND structure_id = ?
 # params: ('en_service', 5)  ← jamais concaténé dans la chaîne SQL</pre>
 <p>Même si un utilisateur malveillant saisit <code>' OR 1=1 --</code>, cette valeur est traitée comme un texte littéral, jamais comme du SQL exécutable.</p>`,freq:"hot",},
-  {id:"p1_11",proj:"p1",num:11,category:`ORM & Requêtes`,thematique:"",question:`Qu'est-ce qu'une migration Django et comment cela fonctionne-t-il ?`,answer:`<p>Une migration est un fichier Python qui décrit une modification du schéma de la base de données (ajout de table, de colonne, de contrainte…). C'est le système de versionnage du schéma.</p>
+  {id:"p1_11",proj:"p1",num:11,category:`ORM & Requêtes`,thematique:"Django",question:`Qu'est-ce qu'une migration Django et comment cela fonctionne-t-il ?`,answer:`<p>Une migration est un fichier Python qui décrit une modification du schéma de la base de données (ajout de table, de colonne, de contrainte…). C'est le système de versionnage du schéma.</p>
 <pre># 1. Créer la migration après modification du modèle
 python manage.py makemigrations
 
@@ -127,7 +127,7 @@ python manage.py migrate
 # Voir l'état des migrations
 python manage.py showmigrations</pre>
 <p>Chaque migration est numérotée (<code>0001_initial.py</code>, <code>0002_add_column.py</code>…) et peut être rejouée sur n'importe quel environnement. C'est ce qui permet à <code>deploy.sh</code> de mettre à jour la BDD en production automatiquement.</p>`,freq:"easy",},
-  {id:"p1_12",proj:"p1",num:12,category:`Sécurité`,thematique:"",question:`Qu'est-ce qu'une attaque CSRF et comment Django s'en protège-t-il ?`,answer:`<p>CSRF (Cross-Site Request Forgery) : un site malveillant force le navigateur de l'utilisateur connecté à envoyer une requête à votre site à son insu.</p>
+  {id:"p1_12",proj:"p1",num:12,category:`Sécurité`,thematique:"Django",question:`Qu'est-ce qu'une attaque CSRF et comment Django s'en protège-t-il ?`,answer:`<p>CSRF (Cross-Site Request Forgery) : un site malveillant force le navigateur de l'utilisateur connecté à envoyer une requête à votre site à son insu.</p>
 <p>Django génère un token CSRF unique par session, caché dans chaque formulaire. Le serveur vérifie ce token à chaque requête POST. Un site externe ne peut pas connaître ce token.</p>
 <pre>&lt;!-- Dans chaque formulaire Django --&gt;
 {% csrf_token %}
@@ -135,9 +135,9 @@ python manage.py showmigrations</pre>
 
 // Dans les requêtes AJAX :
 headers: { 'X-CSRFToken': csrfToken }</pre>`,freq:"hot",},
-  {id:"p1_13",proj:"p1",num:13,category:`Sécurité`,thematique:"",question:`Qu'est-ce qu'une attaque XSS et comment l'avez-vous évitée ?`,answer:`<p>XSS (Cross-Site Scripting) : un attaquant injecte du code JavaScript malveillant dans une page pour voler des données ou prendre le contrôle du navigateur.</p>
+  {id:"p1_13",proj:"p1",num:13,category:`Sécurité`,thematique:"Django",question:`Qu'est-ce qu'une attaque XSS et comment l'avez-vous évitée ?`,answer:`<p>XSS (Cross-Site Scripting) : un attaquant injecte du code JavaScript malveillant dans une page pour voler des données ou prendre le contrôle du navigateur.</p>
 <p>Django échappe automatiquement tous les caractères dangereux dans les templates : <code>&lt;</code> devient <code>&amp;lt;</code>, <code>&gt;</code> devient <code>&amp;gt;</code>, etc. Même si un utilisateur saisit <code>&lt;script&gt;alert('hack')&lt;/script&gt;</code>, Django l'affiche comme du texte, il n'est pas exécuté.</p>`,freq:"hot",},
-  {id:"p1_14",proj:"p1",num:14,category:`Sécurité`,thematique:"",question:`Pourquoi avez-vous mis en place une session unique par utilisateur ?`,answer:`<p>Pour éviter qu'un technicien reste connecté sur un PC public oublié pendant que quelqu'un d'autre se connecte avec son compte. Quand une nouvelle connexion est détectée, l'ancienne session est immédiatement invalidée.</p>
+  {id:"p1_14",proj:"p1",num:14,category:`Sécurité`,thematique:"Django",question:`Pourquoi avez-vous mis en place une session unique par utilisateur ?`,answer:`<p>Pour éviter qu'un technicien reste connecté sur un PC public oublié pendant que quelqu'un d'autre se connecte avec son compte. Quand une nouvelle connexion est détectée, l'ancienne session est immédiatement invalidée.</p>
 <pre>class UniqueSessionMiddleware:
     def __call__(self, request):
         if request.user.is_authenticated:
@@ -145,24 +145,24 @@ headers: { 'X-CSRFToken': csrfToken }</pre>`,freq:"hot",},
             if session_active and session_active.session_key != request.session.session_key:
                 # Invalider l'ancienne session
                 Session.objects.filter(session_key=session_active.session_key).delete()</pre>`,freq:"hot",},
-  {id:"p1_15",proj:"p1",num:15,category:`Sécurité`,thematique:"",question:`Pourquoi stocker les secrets dans un fichier <code>.env</code> plutôt que dans le code ?`,answer:`<p>Si <code>SECRET_KEY</code> est dans le code, elle est visible par tous ceux qui ont accès au dépôt Git (y compris l'historique). Un attaquant connaissant la <code>SECRET_KEY</code> peut forger des cookies de session et des tokens CSRF.</p>
+  {id:"p1_15",proj:"p1",num:15,category:`Sécurité`,thematique:"Django",question:`Pourquoi stocker les secrets dans un fichier <code>.env</code> plutôt que dans le code ?`,answer:`<p>Si <code>SECRET_KEY</code> est dans le code, elle est visible par tous ceux qui ont accès au dépôt Git (y compris l'historique). Un attaquant connaissant la <code>SECRET_KEY</code> peut forger des cookies de session et des tokens CSRF.</p>
 <p>Le fichier <code>.env</code> n'est jamais commité (ajouté au <code>.gitignore</code>). Un fichier <code>.env.example</code> documente les variables attendues sans exposer les valeurs réelles.</p>`,freq:"easy",},
-  {id:"p1_16",proj:"p1",num:16,category:`Architecture & Déploiement`,thematique:"",question:`Quel est le rôle de Nginx par rapport à Gunicorn ?`,answer:`<p><b>Nginx</b> est le serveur web en façade : il gère les connexions HTTP/HTTPS, sert les fichiers statiques (CSS, JS, images) très rapidement sans passer par Python, et transfère uniquement les requêtes dynamiques à Gunicorn.</p>
+  {id:"p1_16",proj:"p1",num:16,category:`Architecture & Déploiement`,thematique:"Django",question:`Quel est le rôle de Nginx par rapport à Gunicorn ?`,answer:`<p><b>Nginx</b> est le serveur web en façade : il gère les connexions HTTP/HTTPS, sert les fichiers statiques (CSS, JS, images) très rapidement sans passer par Python, et transfère uniquement les requêtes dynamiques à Gunicorn.</p>
 <p><b>Gunicorn</b> est le serveur d'application Python (WSGI) : il exécute Django et gère les requêtes dynamiques avec plusieurs workers en parallèle.</p>
 <p>Django seul (<code>runserver</code>) n'est pas fait pour la production : il ne gère pas la concurrence correctement et sert les fichiers statiques lentement.</p>`,freq:"med",},
-  {id:"p1_17",proj:"p1",num:17,category:`Architecture & Déploiement`,thematique:"",question:`Comment fonctionne votre script <code>deploy.sh</code> ? Pourquoi le mode <code>--dry-run</code> ?`,answer:`<p>Le script enchaîne toutes les étapes de mise à jour : sauvegarde BDD → git pull → pip install → migrate → collectstatic → restart Gunicorn → reload Nginx. Chaque étape est journalisée avec un horodatage.</p>
+  {id:"p1_17",proj:"p1",num:17,category:`Architecture & Déploiement`,thematique:"Django",question:`Comment fonctionne votre script <code>deploy.sh</code> ? Pourquoi le mode <code>--dry-run</code> ?`,answer:`<p>Le script enchaîne toutes les étapes de mise à jour : sauvegarde BDD → git pull → pip install → migrate → collectstatic → restart Gunicorn → reload Nginx. Chaque étape est journalisée avec un horodatage.</p>
 <p>Le mode <code>--dry-run</code> affiche ce qui serait exécuté sans rien faire. Il permet de vérifier qu'aucune migration cassante n'attend avant de déployer en production, sans risquer d'interrompre le service.</p>`,freq:"med",},
-  {id:"p1_18",proj:"p1",num:18,category:`Architecture & Déploiement`,thematique:"",question:`Pourquoi avez-vous utilisé <code>X-Accel-Redirect</code> pour les fichiers uploadés ?`,answer:`<p>Sans protection, les fichiers dans <code>/media/</code> sont accessibles directement via leur URL, sans authentification. N'importe qui connaissant l'URL pourrait télécharger une facture ou un bon de livraison.</p>
+  {id:"p1_18",proj:"p1",num:18,category:`Architecture & Déploiement`,thematique:"Django",question:`Pourquoi avez-vous utilisé <code>X-Accel-Redirect</code> pour les fichiers uploadés ?`,answer:`<p>Sans protection, les fichiers dans <code>/media/</code> sont accessibles directement via leur URL, sans authentification. N'importe qui connaissant l'URL pourrait télécharger une facture ou un bon de livraison.</p>
 <p>Avec <code>X-Accel-Redirect</code> : Django vérifie d'abord que l'utilisateur est connecté, puis renvoie un header spécial à Nginx pour servir le fichier. Le fichier ne passe jamais par Python, mais il n'est accessible qu'après vérification.</p>`,freq:"med",},
-  {id:"p1_19",proj:"p1",num:19,category:`Principes de programmation`,thematique:"",question:`Qu'est-ce que le principe DRY ?`,answer:`<p>DRY = "Don't Repeat Yourself" (ne pas se répéter). Toute logique doit exister à un seul endroit dans le code. Si vous copiez-collez du code, c'est un signal que quelque chose doit être factorisé en fonction, classe ou mixin.</p>
+  {id:"p1_19",proj:"p1",num:19,category:`Principes de programmation`,thematique:"Django",question:`Qu'est-ce que le principe DRY ?`,answer:`<p>DRY = "Don't Repeat Yourself" (ne pas se répéter). Toute logique doit exister à un seul endroit dans le code. Si vous copiez-collez du code, c'est un signal que quelque chose doit être factorisé en fonction, classe ou mixin.</p>
 <p>Dans votre projet : le filtrage par structure est dans le mixin <code>StructureFilterMixin</code>, la logique de prêt dans <code>MaterielService</code>. Changer ces règles à un seul endroit met à jour tout le comportement.</p>`,freq:"easy",},
-  {id:"p1_20",proj:"p1",num:20,category:`Principes de programmation`,thematique:"",question:`Qu'est-ce que le principe SRP (Single Responsibility Principle) ?`,answer:`<p>SRP : chaque classe ou module ne doit avoir qu'une seule raison de changer — une seule responsabilité.</p>
+  {id:"p1_20",proj:"p1",num:20,category:`Principes de programmation`,thematique:"Django",question:`Qu'est-ce que le principe SRP (Single Responsibility Principle) ?`,answer:`<p>SRP : chaque classe ou module ne doit avoir qu'une seule raison de changer — une seule responsabilité.</p>
 <p>Dans votre projet :<br/>
         — Le modèle <code>Pret</code> gère la structure de données et la validation.<br/>
         — Le signal gère la clôture automatique des affectations.<br/>
         — <code>MaterielService</code> gère la logique métier réutilisable.<br/>
         Si vous mélangez tout dans le modèle, il devient difficile à tester et à maintenir.</p>`,freq:"easy",},
-  {id:"p1_21",proj:"p1",num:21,category:`Principes de programmation`,thematique:"",question:`Qu'est-ce qu'une propriété calculée (<code>@property</code>) en Python ?`,answer:`<p>Un <code>@property</code> permet d'accéder à une valeur calculée comme si c'était un attribut, sans l'écrire en base de données.</p>
+  {id:"p1_21",proj:"p1",num:21,category:`Principes de programmation`,thematique:"Django",question:`Qu'est-ce qu'une propriété calculée (<code>@property</code>) en Python ?`,answer:`<p>Un <code>@property</code> permet d'accéder à une valeur calculée comme si c'était un attribut, sans l'écrire en base de données.</p>
 <pre>class Pret(models.Model):
     date_restitution = models.DateField()
     est_rendu        = models.BooleanField(default=False)
@@ -175,10 +175,10 @@ headers: { 'X-CSRFToken': csrfToken }</pre>`,freq:"hot",},
         return date.today() &gt; self.date_restitution
 
 # Utilisation : pret.est_en_retard  (pas pret.est_en_retard())</pre>`,freq:"med",},
-  {id:"p1_22",proj:"p1",num:22,category:`Principes de programmation`,thematique:"",question:`Comment avez-vous réalisé les exports PDF et Excel ?`,answer:`<p><b>PDF</b> avec ReportLab : on construit le document Python en définissant les éléments (titre, tableau, style) puis on génère un fichier binaire qu'on renvoie avec <code>Content-Disposition: attachment</code>.</p>
+  {id:"p1_22",proj:"p1",num:22,category:`Principes de programmation`,thematique:"Django",question:`Comment avez-vous réalisé les exports PDF et Excel ?`,answer:`<p><b>PDF</b> avec ReportLab : on construit le document Python en définissant les éléments (titre, tableau, style) puis on génère un fichier binaire qu'on renvoie avec <code>Content-Disposition: attachment</code>.</p>
 <p><b>Excel</b> avec openpyxl : on crée un classeur Python, on écrit les données cellule par cellule, on applique des styles, puis on le sauvegarde dans un buffer mémoire et on l'envoie en téléchargement.</p>
 <p>Les deux utilisent des vues Django protégées par <code>@login_required</code> — pas de téléchargement anonyme.</p>`,freq:"easy",},
-  {id:"p1_23",proj:"p1",num:23,category:`Tests`,thematique:"",question:`Qu'est-ce qu'un test unitaire ? Comment en avez-vous écrit ?`,answer:`<p>Un test unitaire vérifie qu'une fonction ou méthode précise produit le bon résultat dans un cas donné. Il est isolé : il ne dépend pas du réseau, d'autres services ou d'autres tests.</p>
+  {id:"p1_23",proj:"p1",num:23,category:`Tests`,thematique:"Django",question:`Qu'est-ce qu'un test unitaire ? Comment en avez-vous écrit ?`,answer:`<p>Un test unitaire vérifie qu'une fonction ou méthode précise produit le bon résultat dans un cas donné. Il est isolé : il ne dépend pas du réseau, d'autres services ou d'autres tests.</p>
 <pre>class MaterielCreationTests(TestCase):
     def test_code_unique_en_creation_concurrente(self):
         """4 threads créent un PC en même temps → codes uniques."""
@@ -189,13 +189,13 @@ headers: { 'X-CSRFToken': csrfToken }</pre>`,freq:"hot",},
             futures = [ex.submit(creer_pc) for _ in range(4)]
         codes = list(Materiel.objects.values_list('code', flat=True))
         self.assertEqual(len(codes), len(set(codes)))  # Pas de doublons</pre>`,freq:"med",},
-  {id:"p1_24",proj:"p1",num:24,category:`Tests`,thematique:"",question:`Qu'est-ce qu'un jeu d'essai et comment l'avez-vous construit ?`,answer:`<p>Un jeu d'essai est un ensemble de cas de test qui vérifient qu'une fonctionnalité se comporte correctement. Pour chaque cas, on définit : les données en entrée, le résultat attendu, et le résultat réellement obtenu.</p>
+  {id:"p1_24",proj:"p1",num:24,category:`Tests`,thematique:"Django",question:`Qu'est-ce qu'un jeu d'essai et comment l'avez-vous construit ?`,answer:`<p>Un jeu d'essai est un ensemble de cas de test qui vérifient qu'une fonctionnalité se comporte correctement. Pour chaque cas, on définit : les données en entrée, le résultat attendu, et le résultat réellement obtenu.</p>
 <p>Pour la fonctionnalité de prêt :<br/>
         — Cas nominal : prêt créé avec les bonnes dates → ✅ utilisateur pré-rempli<br/>
         — Cas d'erreur : date restitution avant date prêt → ✅ ValidationError levée<br/>
         — Cas limite : prêt en retard → ✅ badge rouge affiché<br/>
         — Cas concurrence : 4 matériels créés simultanément → ✅ 0 doublon de code</p>`,freq:"hot",},
-  {id:"p1_25",proj:"p1",num:25,category:`Tests`,thematique:"",question:`Qu'est-ce qu'une commande de gestion Django (<code>management command</code>) ?`,answer:`<p>C'est un script Python qu'on peut appeler en ligne de commande via <code>python manage.py mon_commande</code>. Il a accès à tout l'environnement Django (modèles, BDD, settings).</p>
+  {id:"p1_25",proj:"p1",num:25,category:`Tests`,thematique:"Django",question:`Qu'est-ce qu'une commande de gestion Django (<code>management command</code>) ?`,answer:`<p>C'est un script Python qu'on peut appeler en ligne de commande via <code>python manage.py mon_commande</code>. Il a accès à tout l'environnement Django (modèles, BDD, settings).</p>
 <pre># Structure : parcinformatique/management/commands/envoyer_alertes_pret.py
 class Command(BaseCommand):
     help = 'Envoie les alertes email pour les prêts en retard'
@@ -208,21 +208,21 @@ class Command(BaseCommand):
         prets = Pret.objects.filter(est_rendu=False, ...)
         # ... logique d'envoi email</pre>
 <p>Planifié dans cron : <code>0 8 * * * python manage.py envoyer_alertes_pret --seuil 7</code></p>`,freq:"med",},
-  {id:"p1_26",proj:"p1",num:26,category:`Tests`,thematique:"",question:`Qu'est-ce que le Django Admin et comment l'avez-vous personnalisé ?`,answer:`<p>Django Admin est une interface d'administration auto-générée à partir des modèles. Elle permet de créer, lire, modifier et supprimer des données sans développer un front-end custom.</p>
+  {id:"p1_26",proj:"p1",num:26,category:`Tests`,thematique:"Django",question:`Qu'est-ce que le Django Admin et comment l'avez-vous personnalisé ?`,answer:`<p>Django Admin est une interface d'administration auto-générée à partir des modèles. Elle permet de créer, lire, modifier et supprimer des données sans développer un front-end custom.</p>
 <p>Personnalisations réalisées :<br/>
         — Templates HTML surchargés (<code>base_site.html</code>, <code>nav_sidebar.html</code>, <code>change_list.html</code>) pour la charte graphique<br/>
         — Tailwind CSS pour le style responsive<br/>
         — Filtres avancés personnalisés (<code>list_filter</code>, <code>search_fields</code>)<br/>
         — Actions personnalisées (exporter en PDF/Excel)<br/>
         — Mixins de permission pour le filtrage par structure</p>`,freq:"easy",},
-  {id:"p1_27",proj:"p1",num:27,category:`Tests`,thematique:"",question:`Qu'est-ce que <code>update_fields</code> dans <code>save()</code> ?`,answer:`<p>Par défaut, <code>save()</code> met à jour toutes les colonnes de la ligne en BDD. <code>update_fields</code> restreint la mise à jour aux seules colonnes spécifiées, ce qui est plus performant et évite d'écraser des modifications concurrentes.</p>
+  {id:"p1_27",proj:"p1",num:27,category:`Tests`,thematique:"Django",question:`Qu'est-ce que <code>update_fields</code> dans <code>save()</code> ?`,answer:`<p>Par défaut, <code>save()</code> met à jour toutes les colonnes de la ligne en BDD. <code>update_fields</code> restreint la mise à jour aux seules colonnes spécifiées, ce qui est plus performant et évite d'écraser des modifications concurrentes.</p>
 <pre># Met à jour TOUTES les colonnes (risque d'écrasement)
 pret.save()
 
 # Met à jour SEULEMENT est_rendu et date_retour_reelle
 pret.save(update_fields=['est_rendu', 'date_retour_reelle'])</pre>
 <p>Dans le service de retour de prêt, les 3 objets modifiés utilisent <code>update_fields</code> pour minimiser les requêtes SQL et éviter les conflits.</p>`,freq:"med",},
-  {id:"p1_28",proj:"p1",num:28,category:`Tests`,thematique:"",question:`Qu'est-ce que la RGPD et comment en avez-vous tenu compte ?`,answer:`<p>Le RGPD (Règlement Général sur la Protection des Données) impose de protéger les données personnelles des utilisateurs : collecte minimale, sécurisation, accès restreint.</p>
+  {id:"p1_28",proj:"p1",num:28,category:`Tests`,thematique:"Django",question:`Qu'est-ce que la RGPD et comment en avez-vous tenu compte ?`,answer:`<p>Le RGPD (Règlement Général sur la Protection des Données) impose de protéger les données personnelles des utilisateurs : collecte minimale, sécurisation, accès restreint.</p>
 <p>Mesures prises :<br/>
         — Accès par rôle (profil consultation / staff / superuser)<br/>
         — Données personnelles (noms des agents) non exportées en clair dans les CSV publics<br/>
@@ -921,4 +921,388 @@ def verifier_token(token_recu: str, token_attendu: str) -> bool:
 # ❌ À éviter pour la sécurité
 import random
 token_non_securise = random.randbytes(32)  # Prévisible !</pre>`,freq:"med",}
+
+
+// ─── Questions Django ajoutées ───────────────────────────
+,
+  {id:"p1_django_vues_1",proj:"p1",num:61,category:"Django — Vues",thematique:"Django",question:"Quelle est la différence entre une Function-Based View (FBV) et une Class-Based View (CBV) ?",answer:`<p>Une <b>FBV</b> est une simple fonction Python qui reçoit une requête et retourne une réponse. Une <b>CBV</b> est une classe qui hérite des vues génériques Django et évite la répétition de code.</p>
+<pre># FBV — explicite, lisible pour les débutants
+from django.shortcuts import render, get_object_or_404
+
+def detail_article(requete, identifiant_article):
+    article = get_object_or_404(Article, pk=identifiant_article)
+    return render(requete, 'articles/detail.html', {'article': article})
+
+# CBV — générique, moins de code pour les cas standards
+from django.views.generic import DetailView
+
+class DetailArticleView(DetailView):
+    model         = Article
+    template_name = 'articles/detail.html'
+    context_object_name = 'article'  # Nom de la variable dans le template</pre>
+<p><b>Quand utiliser quoi ?</b> FBV pour la logique complexe ou personnalisée. CBV pour les opérations CRUD standards (liste, détail, création, modification, suppression).</p>`,freq:"hot"},
+  {id:"p1_django_vues_2",proj:"p1",num:62,category:"Django — Vues",thematique:"Django",question:"Quelles sont les CBV génériques les plus utiles de Django ?",answer:`<pre>from django.views.generic import (
+    ListView,       # Affiche une liste d'objets
+    DetailView,     # Affiche le détail d'un objet
+    CreateView,     # Formulaire de création
+    UpdateView,     # Formulaire de modification
+    DeleteView,     # Confirmation de suppression
+)
+
+# Exemple ListView avec filtrage
+class ListeArticlesView(ListView):
+    model               = Article
+    template_name       = 'articles/liste.html'
+    context_object_name = 'liste_articles'
+    paginate_by         = 10  # Pagination automatique
+
+    def get_queryset(self):
+        # Surcharge pour filtrer selon l'utilisateur connecté
+        return Article.objects.filter(auteur=self.request.user)
+
+    def get_context_data(self, **donnees_contexte):
+        # Ajouter des données supplémentaires au template
+        contexte = super().get_context_data(**donnees_contexte)
+        contexte['nombre_total'] = Article.objects.count()
+        return contexte</pre>`,freq:"hot"},
+  {id:"p1_django_vues_3",proj:"p1",num:63,category:"Django — Vues",thematique:"Django",question:"Qu'est-ce que `render`, `redirect` et `get_object_or_404` ?",answer:`<pre>from django.shortcuts import render, redirect, get_object_or_404
+
+def modifier_article(requete, identifiant_article):
+    # get_object_or_404 : récupère l'objet ou retourne une page 404
+    article = get_object_or_404(Article, pk=identifiant_article)
+
+    if requete.method == 'POST':
+        formulaire = FormulaireArticle(requete.POST, instance=article)
+        if formulaire.is_valid():
+            formulaire.save()
+            # redirect : redirige vers une autre URL (évite double-soumission)
+            return redirect('detail_article', pk=article.pk)
+    else:
+        formulaire = FormulaireArticle(instance=article)
+
+    # render : charge un template avec un contexte et retourne une HttpResponse
+    return render(requete, 'articles/modifier.html', {
+        'formulaire': formulaire,
+        'article':    article,
+    })</pre>`,freq:"hot"},
+  {id:"p1_django_forms_1",proj:"p1",num:64,category:"Django — Formulaires",thematique:"Django",question:"Qu'est-ce qu'un ModelForm et comment l'utiliser ?",answer:`<p>Un <b>ModelForm</b> génère automatiquement un formulaire HTML à partir d'un modèle Django, sans redéfinir chaque champ manuellement.</p>
+<pre>from django import forms
+from .models import Article
+
+class FormulaireArticle(forms.ModelForm):
+    class Meta:
+        model  = Article
+        fields = ['titre', 'contenu', 'categorie']  # Champs inclus
+        # Ou : exclude = ['auteur', 'date_creation']
+
+        widgets = {
+            'contenu': forms.Textarea(attrs={'rows': 8, 'class': 'form-control'}),
+        }
+        labels = {
+            'titre': 'Titre de l\'article',
+        }
+
+    # Validation personnalisée d'un champ
+    def clean_titre(self):
+        titre = self.cleaned_data['titre']
+        if len(titre) < 5:
+            raise forms.ValidationError("Le titre doit faire au moins 5 caractères.")
+        return titre.strip()  # Toujours retourner la valeur nettoyée</pre>`,freq:"hot"},
+  {id:"p1_django_forms_2",proj:"p1",num:65,category:"Django — Formulaires",thematique:"Django",question:"Comment fonctionne la validation d'un formulaire Django (`is_valid`, `cleaned_data`) ?",answer:`<pre>def creer_article(requete):
+    if requete.method == 'POST':
+        # Lie le formulaire aux données POST et aux fichiers uploadés
+        formulaire = FormulaireArticle(requete.POST, requete.FILES)
+
+        if formulaire.is_valid():
+            # cleaned_data contient les données validées et nettoyées
+            titre_valide   = formulaire.cleaned_data['titre']
+            contenu_valide = formulaire.cleaned_data['contenu']
+
+            # save() crée l'objet en base — commit=False pour modifier avant
+            article = formulaire.save(commit=False)
+            article.auteur = requete.user  # Ajouter l'auteur avant sauvegarde
+            article.save()
+            return redirect('liste_articles')
+    else:
+        formulaire = FormulaireArticle()
+
+    return render(requete, 'articles/creer.html', {'formulaire': formulaire})
+
+# Dans le template
+# {{ formulaire.as_p }}           → champs dans des <p>
+# {{ formulaire.titre }}          → champ seul
+# {{ formulaire.titre.errors }}   → erreurs du champ</pre>`,freq:"hot"},
+  {id:"p1_django_templates_1",proj:"p1",num:66,category:"Django — Templates",thematique:"Django",question:"Quelles sont les balises de template Django les plus importantes ?",answer:`<pre>{# Commentaire dans un template Django #}
+
+{# Héritage — base.html définit la structure commune #}
+{% extends 'base.html' %}
+
+{% block titre %}Mes articles{% endblock %}
+
+{% block contenu %}
+  {# Boucle for #}
+  {% for article in liste_articles %}
+    &lt;h2&gt;{{ article.titre }}&lt;/h2&gt;
+    &lt;p&gt;{{ article.contenu|truncatewords:30 }}&lt;/p&gt;
+
+    {# URL inversée — évite de coder les URLs en dur #}
+    &lt;a href="{% url 'detail_article' pk=article.pk %}"&gt;Lire la suite&lt;/a&gt;
+  {% empty %}
+    &lt;p&gt;Aucun article disponible.&lt;/p&gt;
+  {% endfor %}
+
+  {# Condition #}
+  {% if request.user.is_authenticated %}
+    &lt;a href="{% url 'creer_article' %}"&gt;+ Nouvel article&lt;/a&gt;
+  {% endif %}
+
+  {# Inclusion d'un sous-template #}
+  {% include 'partials/pagination.html' with page_obj=page_obj %}
+{% endblock %}</pre>`,freq:"hot"},
+  {id:"p1_django_templates_2",proj:"p1",num:67,category:"Django — Templates",thematique:"Django",question:"Qu'est-ce que les filtres de template Django et donnez 5 exemples utiles ?",answer:`<p>Les <b>filtres</b> transforment une variable dans le template avec la syntaxe <code>{{ variable|filtre }}</code> ou <code>{{ variable|filtre:argument }}</code>.</p>
+<pre>{{ article.titre|upper }}                {# TITRE EN MAJUSCULES #}
+{{ article.titre|lower }}                {# titre en minuscules #}
+{{ article.contenu|truncatewords:20 }}   {# 20 premiers mots... #}
+{{ article.contenu|truncatechars:100 }}  {# 100 premiers caractères #}
+{{ article.date_creation|date:"d/m/Y" }} {# 21/05/2026 #}
+{{ article.date_creation|timesince }}    {# "3 jours" #}
+{{ prix|floatformat:2 }}                 {# 12.50 #}
+{{ liste_tags|join:", " }}               {# "Python, Django, Web" #}
+{{ texte_html|safe }}                    {# Affiche le HTML sans l'échapper #}
+{{ valeur|default:"Non renseigné" }}     {# Valeur par défaut si vide #}
+{{ nombre|divisibleby:2 }}              {# True/False #}</pre>
+<p>⚠️ N'utiliser <code>|safe</code> que pour du contenu que vous contrôlez totalement — jamais sur des données utilisateur (risque XSS).</p>`,freq:"med"},
+  {id:"p1_django_auth_1",proj:"p1",num:68,category:"Django — Authentification",thematique:"Django",question:"Comment protéger une vue avec `login_required` ?",answer:`<pre>from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+# Décorateur pour les FBV
+@login_required(login_url='/connexion/')  # Redirige si non connecté
+def tableau_de_bord(requete):
+    return render(requete, 'dashboard.html')
+
+# Mixin pour les CBV
+class TableauDeBordView(LoginRequiredMixin, ListView):
+    login_url    = '/connexion/'
+    redirect_field_name = 'next'  # URL de retour après connexion
+    model        = Article
+
+# Vérifier les permissions
+@permission_required('articles.add_article', raise_exception=True)
+def creer_article(requete):
+    pass
+
+# Dans les templates
+{% if request.user.is_authenticated %}
+    Bonjour {{ request.user.username }} !
+    &lt;a href="{% url 'logout' %}"&gt;Se déconnecter&lt;/a&gt;
+{% else %}
+    &lt;a href="{% url 'login' %}"&gt;Se connecter&lt;/a&gt;
+{% endif %}</pre>`,freq:"hot"},
+  {id:"p1_django_auth_2",proj:"p1",num:69,category:"Django — Authentification",thematique:"Django",question:"Comment fonctionne le système d'authentification intégré de Django ?",answer:`<pre>from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+
+# Créer un utilisateur
+nouvel_utilisateur = User.objects.create_user(
+    username='alice',
+    email='alice@example.com',
+    password='motdepasse_securise'  # Django hache automatiquement (PBKDF2)
+)
+
+# Authentifier un utilisateur
+def vue_connexion(requete):
+    if requete.method == 'POST':
+        nom_utilisateur = requete.POST['username']
+        mot_de_passe    = requete.POST['password']
+
+        utilisateur = authenticate(requete, username=nom_utilisateur, password=mot_de_passe)
+        if utilisateur is not None:
+            login(requete, utilisateur)  # Crée la session
+            return redirect('tableau_de_bord')
+        else:
+            messages.error(requete, 'Identifiants incorrects.')
+
+    return render(requete, 'auth/connexion.html')
+
+def vue_deconnexion(requete):
+    logout(requete)  # Détruit la session
+    return redirect('accueil')</pre>`,freq:"hot"},
+  {id:"p1_django_migrations_1",proj:"p1",num:70,category:"Django — Migrations",thematique:"Django",question:"Quelle est la différence entre `makemigrations` et `migrate` ?",answer:`<p>Ces deux commandes fonctionnent en deux étapes distinctes :</p>
+<ul style="padding-left:1.2rem;margin:6px 0 10px">
+  <li><b><code>makemigrations</code></b> : lit vos modèles Python et <b>génère</b> les fichiers de migration (dans <code>migrations/</code>). Ne touche pas encore à la base de données.</li>
+  <li><b><code>migrate</code></b> : <b>applique</b> les fichiers de migration à la base de données réelle.</li>
+</ul>
+<pre># Workflow complet
+python manage.py makemigrations          # Génère 0002_article_categorie.py
+python manage.py migrate                 # Applique toutes les migrations en attente
+python manage.py migrate articles 0001  # Retour en arrière vers une migration précise
+
+# Commandes utiles
+python manage.py showmigrations          # Liste l'état de toutes les migrations
+python manage.py sqlmigrate articles 0002  # Affiche le SQL généré sans l'exécuter
+python manage.py makemigrations --name ajout_categorie  # Nom explicite</pre>
+<p>⚠️ Les fichiers de migration doivent être <b>versionnés dans Git</b> — ils font partie du code source.</p>`,freq:"hot"},
+  {id:"p1_django_migrations_2",proj:"p1",num:71,category:"Django — Migrations",thematique:"Django",question:"Comment gérer les migrations de données (data migrations) ?",answer:`<p>Une <b>migration de données</b> modifie les données existantes en base (pas seulement le schéma). Elle s'écrit avec <code>RunPython</code>.</p>
+<pre># Créer une migration vide
+python manage.py makemigrations --empty articles --name initialiser_categories
+
+# Dans le fichier généré : articles/migrations/0003_initialiser_categories.py
+from django.db import migrations
+
+def creer_categories_initiales(applications, schema_editor):
+    ModeleCategorie = applications.get_model('articles', 'Categorie')
+    ModeleCategorie.objects.bulk_create([
+        ModeleCategorie(nom='Python'),
+        ModeleCategorie(nom='Django'),
+        ModeleCategorie(nom='JavaScript'),
+    ])
+
+def supprimer_categories_initiales(applications, schema_editor):
+    ModeleCategorie = applications.get_model('articles', 'Categorie')
+    ModeleCategorie.objects.filter(nom__in=['Python', 'Django', 'JavaScript']).delete()
+
+class Migration(migrations.Migration):
+    dependencies = [('articles', '0002_categorie')]
+    operations   = [
+        # Toujours fournir la fonction inverse pour le rollback
+        migrations.RunPython(creer_categories_initiales, supprimer_categories_initiales)
+    ]</pre>`,freq:"med"},
+  {id:"p1_django_admin_1",proj:"p1",num:72,category:"Django — Interface Admin",thematique:"Django",question:"Comment personnaliser l'interface d'administration Django ?",answer:`<pre>from django.contrib import admin
+from .models import Article, Categorie
+
+@admin.register(Article)
+class AdminArticle(admin.ModelAdmin):
+    # Colonnes affichées dans la liste
+    list_display   = ('titre', 'auteur', 'categorie', 'date_creation', 'est_publie')
+
+    # Filtres dans la barre latérale
+    list_filter    = ('est_publie', 'categorie', 'date_creation')
+
+    # Barre de recherche
+    search_fields  = ('titre', 'contenu', 'auteur__username')
+
+    # Champs en lecture seule
+    readonly_fields = ('date_creation', 'date_modification')
+
+    # Organisation des champs dans le formulaire de détail
+    fieldsets = (
+        ('Contenu',     {'fields': ('titre', 'contenu', 'categorie')}),
+        ('Publication', {'fields': ('est_publie', 'date_publication')}),
+        ('Métadonnées', {'fields': ('auteur', 'date_creation'), 'classes': ('collapse',)}),
+    )
+
+    # Actions personnalisées
+    actions = ['publier_articles']
+
+    @admin.action(description='Publier les articles sélectionnés')
+    def publier_articles(self, requete, queryset):
+        queryset.update(est_publie=True)
+
+admin.site.register(Categorie)
+admin.site.site_header = 'Administration DWWM'</pre>`,freq:"hot"},
+  {id:"p1_django_urls_1",proj:"p1",num:73,category:"Django — URLs",thematique:"Django",question:"Comment structurer les URLs dans Django avec `path`, `include` et le nommage ?",answer:`<pre># monprojet/urls.py — fichier racine
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/',    admin.site.urls),
+    path('articles/', include('articles.urls', namespace='articles')),
+    path('auth/',     include('django.contrib.auth.urls')),  # Login/logout intégrés
+]
+
+# articles/urls.py — URLs de l'application
+from django.urls import path
+from . import views
+
+app_name = 'articles'  # Namespace pour les URLs nommées
+
+urlpatterns = [
+    path('',                  views.ListeArticlesView.as_view(), name='liste'),
+    path('&lt;int:pk&gt;/',          views.DetailArticleView.as_view(), name='detail'),
+    path('creer/',            views.CreerArticleView.as_view(),  name='creer'),
+    path('&lt;int:pk&gt;/modifier/', views.ModifierArticleView.as_view(), name='modifier'),
+    path('&lt;slug:slug&gt;/',       views.DetailParSlugView.as_view(), name='detail-slug'),
+]
+
+# Dans un template : {% url 'articles:detail' pk=article.pk %}
+# Dans une vue     : redirect('articles:liste')</pre>`,freq:"hot"},
+  {id:"p1_django_settings_1",proj:"p1",num:74,category:"Django — Configuration",thematique:"Django",question:"Quels sont les paramètres Django essentiels à configurer pour la production ?",answer:`<pre># settings.py — paramètres critiques
+
+# ❌ JAMAIS en production
+DEBUG = False
+
+# Domaines autorisés
+ALLOWED_HOSTS = ['monsite.com', 'www.monsite.com']
+
+# Clé secrète — toujours depuis une variable d'environnement
+import os
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+
+# Base de données
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME':   os.environ.get('DB_NAME'),
+        'USER':   os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST':   os.environ.get('DB_HOST', 'localhost'),
+    }
+}
+
+# Fichiers statiques (collectstatic avant déploiement)
+STATIC_URL  = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Dossier cible de collectstatic
+
+# Fichiers uploadés par les utilisateurs
+MEDIA_URL  = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Sécurité HTTPS
+SECURE_SSL_REDIRECT         = True
+SESSION_COOKIE_SECURE       = True
+CSRF_COOKIE_SECURE          = True
+SECURE_HSTS_SECONDS         = 31536000</pre>`,freq:"hot"},
+  {id:"p1_django_middleware_1",proj:"p1",num:75,category:"Django — Middleware",thematique:"Django",question:"Qu'est-ce qu'un middleware Django et quels sont ceux activés par défaut ?",answer:`<p>Un <b>middleware</b> est une couche de traitement qui s'applique à chaque requête (avant la vue) et à chaque réponse (après la vue). Ils sont empilés dans l'ordre de <code>MIDDLEWARE</code>.</p>
+<pre>MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',      # Headers de sécurité
+    'django.contrib.sessions.middleware.SessionMiddleware', # Gestion des sessions
+    'django.middleware.common.CommonMiddleware',           # Redirections /
+    'django.middleware.csrf.CsrfViewMiddleware',          # Protection CSRF
+    'django.contrib.auth.middleware.AuthenticationMiddleware', # request.user
+    'django.contrib.messages.middleware.MessageMiddleware',    # Système de messages
+]
+
+# Créer son propre middleware
+class JournaliserRequetesMiddleware:
+    def __init__(self, gestionnaire_suivant):
+        self.gestionnaire_suivant = gestionnaire_suivant
+
+    def __call__(self, requete):
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"{requete.method} {requete.path} — {requete.user}")
+
+        reponse = self.gestionnaire_suivant(requete)  # Appelle la vue
+        return reponse</pre>`,freq:"med"},
+  {id:"p1_django_csrf_1",proj:"p1",num:76,category:"Django — Sécurité",thematique:"Django",question:"Qu'est-ce qu'une attaque CSRF et comment Django s'en protège-t-il ?",answer:`<p>Une attaque <b>CSRF</b> (Cross-Site Request Forgery) consiste à faire envoyer une requête à votre application par un utilisateur connecté, depuis un site malveillant.</p>
+<p>Django génère un <b>token CSRF</b> unique par session et le vérifie à chaque soumission de formulaire POST.</p>
+<pre>{# Dans chaque formulaire POST — OBLIGATOIRE #}
+&lt;form method="post" action="{% url 'articles:creer' %}"&gt;
+    {% csrf_token %}  {# Génère un input hidden avec le token #}
+    {{ formulaire.as_p }}
+    &lt;button type="submit"&gt;Créer&lt;/button&gt;
+&lt;/form&gt;
+
+# Pour les appels AJAX — envoyer le token dans les headers
+# (récupéré depuis le cookie csrftoken)
+fetch('/api/articles/', {
+    method: 'POST',
+    headers: { 'X-CSRFToken': getCookie('csrftoken') },
+    body: JSON.stringify(donnees),
+})
+
+# Désactiver pour une vue API (si authentification par token JWT)
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def mon_endpoint_api(requete):
+    pass</pre>`,freq:"hot"}
 ];
