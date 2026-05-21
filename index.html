@@ -1619,10 +1619,11 @@ function switchTab(proj, el) {
   el.classList.add('active');
   document.querySelectorAll('.section').forEach(s => {
     s.classList.remove('active');
-    s.style.display = 'none';
+    s.classList.add('hidden');
+    s.style.display = '';
   });
   const sec = document.getElementById('sec-' + proj);
-  sec.style.display = 'block';
+  sec.classList.remove('hidden');
   sec.classList.add('active');
   document.querySelectorAll('.stats').forEach(s => s.classList.add('hidden'));
   document.getElementById('stats-' + proj).classList.remove('hidden');
@@ -1649,10 +1650,12 @@ function filterQ() {
   });
 }
 
-// Init : afficher la première section
 document.addEventListener('DOMContentLoaded', function() {
   const first = document.getElementById('sec-p1');
-  if (first) { first.style.display = 'block'; first.classList.add('active'); }
+  if (first) {
+    first.classList.remove('hidden');
+    first.classList.add('active');
+  }
 });
 </script>
 </body>
