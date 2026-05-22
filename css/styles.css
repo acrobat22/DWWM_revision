@@ -21,7 +21,7 @@
 
   /* Neutres */
   --white:      #ffffff;
-  --grey-bg:    #f7f4f3;   /* Fond de page (body) */
+  --grey-bg:    #f7f4f3;   /* Fond de page de base (body) */
   --grey-light: #f0ede8;   /* Fond des badges thématique */
   --grey-border:#e8e0de;   /* Bordures des cartes, inputs, boutons */
   --text:       #1a1a1a;   /* Texte principal */
@@ -37,6 +37,22 @@
   /* Ombres */
   --shadow-sm:  0 1px 4px rgba(0,0,0,.06);          /* Tableau admin */
   --shadow-md:  0 2px 16px rgba(227,83,54,.10);      /* Carte question ouverte */
+
+  /* ── Glass — variables de l'effet verre dépoli ─────────
+     Utilisées sur .qcard uniquement.
+     backdrop-filter: blur() crée le flou sur ce qui est
+     derrière la carte ; le dégradé de .page le rend visible.
+     ──────────────────────────────────────────────────────── */
+  --glass-bg:      rgba(255,255,255,.52);  /* Blanc semi-transparent */
+  --glass-border:  rgba(255,255,255,.85);  /* Bordure "highlight" blanche */
+  --glass-blur:    20px;                   /* Intensité du flou */
+  --glass-sat:     1.6;                    /* Saturation de ce qui est derrière */
+  --glass-shadow:  0 1px 0 rgba(255,255,255,.9) inset,
+                   0 4px 16px rgba(0,0,0,.05);  /* Ombre + reflet intérieur */
+  --glass-shadow-hover: 0 1px 0 rgba(255,255,255,.9) inset,
+                        0 8px 28px rgba(0,0,0,.09);
+  --glass-shadow-open:  0 1px 0 rgba(255,255,255,.9) inset,
+                        0 8px 32px rgba(227,83,54,.14);
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -108,9 +124,36 @@ body {
    Chaque page est masquée par défaut.
    La classe .active la rend visible.
    max-width + margin:auto = centrage sur grands écrans.
+
+   DÉGRADÉ DE FOND — rendu nécessaire pour l'effet glass.
+   backdrop-filter:blur() n'est visible que si quelque chose
+   de coloré se trouve derrière la carte. Sans ce dégradé,
+   les cartes glass auraient l'air banalement blanches.
+   Les 4 stops (rose → gris → bleu lavande → vert menthe)
+   correspondent à la palette douce de la charte.
    ───────────────────────────────────────────────────────── */
-.page { display: none; padding: 14px 14px 60px; max-width: 820px; margin: 0 auto; }
+.page {
+  display: none;
+  padding: 14px 14px 60px;
+  max-width: 820px;
+  margin: 0 auto;
+}
 .page.active { display: block; }
+
+/* Le dégradé est appliqué uniquement à la page quiz,
+   pas à la page admin (tableau plat, pas besoin de glass). */
+#page-quiz {
+  background: linear-gradient(
+    160deg,
+    #fde8e4 0%,    /* rose très clair — tire de --red-pale */
+    #f7f2f0 30%,   /* gris chaud neutre */
+    #eef2fb 65%,   /* bleu lavande doux */
+    #f0f7ee 100%   /* vert menthe très clair */
+  );
+  border-radius: 0 0 20px 20px; /* Arrondit le bas du fond coloré */
+  min-height: calc(100vh - 52px); /* Couvre toute la hauteur visible */
+  padding-top: 16px;
+}
 
 /* ─────────────────────────────────────────────────────────
    ONGLETS DE PROJET
@@ -178,8 +221,7 @@ body {
 
 /* ─────────────────────────────────────────────────────────
    BARRE DE STATISTIQUES
-   Petites pilules affichant le nombre total et par fréquence.
-   Ex : "42 questions | 🔴 Fréquentes : 17 | 🔵 Techniques : 15…"
+   Petites pilules : "42 questions | 🔴 Fréquentes : 17 …"
    ───────────────────────────────────────────────────────── */
 .statsbar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
 .sstat {
@@ -194,112 +236,201 @@ body {
 
 /* ─────────────────────────────────────────────────────────
    LABEL DE CATÉGORIE
-   Titre de section affiché entre les groupes de questions.
-   Ex : "WEBSOCKET & SOCKET.IO" en majuscules avec filet rouge à gauche.
+   Séparateur texte centré entre deux lignes fines.
+   Style inspiré des menus macOS Sonoma — plus aéré
+   que le précédent bandeau rouge à gauche.
+   Ex :  ─────  WEBSOCKET & SOCKET.IO  ─────
    ───────────────────────────────────────────────────────── */
 .cat-label {
-  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 8px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: .07em;
-  color: var(--red-dark);
+  letter-spacing: .1em;
   text-transform: uppercase;
-  margin: 20px 0 6px 2px;
-  padding-left: 8px;
-  border-left: 3px solid var(--red);  /* Filet rouge caractéristique */
+  color: rgba(0,0,0,.35);
+  white-space: nowrap;
+}
+/* Les deux lignes de part et d'autre du texte */
+.cat-label::before,
+.cat-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(0,0,0,.1);
 }
 
 /* ─────────────────────────────────────────────────────────
-   CARTE QUESTION (accordéon)
-   Structure : .qcard > .qhead (clic) + .qbody (réponse masquée)
-   La classe .open est ajoutée/retirée par toggleCard() en JS.
+   CARTE QUESTION — LIQUID GLASS
+   Effet verre dépoli inspiré iOS/macOS.
+   Le fond semi-transparent + backdrop-filter:blur() crée
+   l'illusion d'un matériau translucide devant le dégradé.
+   Le reflet blanc interne (inset shadow) simule la lumière
+   qui frappe le bord supérieur de la "glace".
+
+   Structure HTML :
+     .qcard > .qhead (clic) > .qnum + .qtxt + .qchev
+             > .qbody > .qbody-inner (réponse)
+
+   La classe .open est ajoutée/retirée par toggleCard() dans quiz.js.
    ───────────────────────────────────────────────────────── */
 .qcard {
-  background: var(--white);
-  border: 1px solid var(--grey-border);
-  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  border: 0.5px solid var(--glass-border);
+  border-radius: 18px;
   margin-bottom: 8px;
-  overflow: hidden;   /* Masque le .qbody quand fermé */
-  transition: box-shadow .15s;
+  overflow: hidden;
+  box-shadow: var(--glass-shadow);
+  transition: box-shadow .25s, transform .2s;
+}
+/* Légère élévation au survol */
+.qcard:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--glass-shadow-hover);
 }
 /* Ombre rouge douce quand la carte est ouverte */
-.qcard.open { box-shadow: var(--shadow-md); }
+.qcard.open { box-shadow: var(--glass-shadow-open); }
 
-/* En-tête cliquable de la carte (numéro + question + chevron) */
+/* ── En-tête cliquable ─────────────────────────────────── */
 .qhead {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 14px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px 14px 12px;
   cursor: pointer;
-  user-select: none;  /* Empêche la sélection de texte au clic */
+  user-select: none;   /* Empêche la sélection de texte au clic */
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  min-height: 52px;   /* Zone de tap suffisante sur mobile */
+  min-height: 52px;    /* Zone de tap suffisante sur mobile */
 }
-/* Feedback visuel au tap sur mobile */
-.qhead:active { background: var(--red-pale); }
 
-/* Badge numéro circulaire coloré selon le projet */
+/* ── Badge numéro — carré arrondi style iOS 18 ─────────── */
 .qnum {
-  min-width: 28px;
-  height: 28px;
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;   /* Carré arrondi (≠ cercle parfait) */
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   font-weight: 700;
   color: var(--white);
-  flex-shrink: 0;     /* Ne rétrécit jamais, même sur petit écran */
-  margin-top: 1px;
+  flex-shrink: 0;
+  /* Dégradé subtil + ombre colorée selon le projet */
+  background: linear-gradient(150deg, var(--red) 0%, var(--red-dark) 100%);
+  box-shadow: 0 3px 8px rgba(227,83,54,.38), 0 1px 2px rgba(0,0,0,.15);
 }
-.p1 .qnum { background: var(--red); }       /* Projet 1 — rouge-orangé */
-.p2 .qnum { background: var(--red-dark); }  /* Projet 2 — rouge foncé */
-.p3 .qnum { background: #7b3fa0; }          /* Transversales — violet */
+/* P2 — rouge foncé */
+.p2 .qnum {
+  background: linear-gradient(150deg, #c94420 0%, #a33010 100%);
+  box-shadow: 0 3px 8px rgba(163,48,16,.38), 0 1px 2px rgba(0,0,0,.15);
+}
+/* P3 — violet */
+.p3 .qnum {
+  background: linear-gradient(150deg, #7b3fa0 0%, #5c2b80 100%);
+  box-shadow: 0 3px 8px rgba(92,43,128,.38), 0 1px 2px rgba(0,0,0,.15);
+}
 
 /* Texte de la question */
 .qtxt {
+  flex: 1;
   font-size: 15px;
   font-weight: 500;
   line-height: 1.4;
-  flex: 1;  /* Prend toute la largeur entre le badge et le chevron */
-  color: var(--text);
+  color: rgba(0,0,0,.82);
 }
 
-/* Chevron ⌄ à droite — tourne à 180° quand la carte est ouverte */
+/* ── Chevron dans un petit cercle ──────────────────────── */
 .qchev {
-  font-size: 20px;
-  color: #bbb;
-  transition: transform .2s;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  padding-top: 2px;
+  /* Animation spring : dépassement léger avant de se stabiliser */
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1), background .2s;
 }
-.qcard.open .qchev { transform: rotate(180deg); color: var(--red); }
+.qchev svg {
+  width: 12px;
+  height: 12px;
+  stroke: rgba(0,0,0,.4);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  transition: stroke .2s;
+  display: block;
+}
+/* État ouvert : rotation + fond rouge discret */
+.qcard.open .qchev {
+  transform: rotate(180deg);
+  background: rgba(227,83,54,.12);
+}
+.qcard.open .qchev svg { stroke: var(--red); }
 
 /* ─────────────────────────────────────────────────────────
-   CORPS DE LA RÉPONSE
-   Masqué par défaut, visible quand .qcard.open.
-   Contient : badge de fréquence + texte HTML + blocs de code.
-   L'indentation à gauche (52px) aligne avec le texte de la question.
+   CORPS DE LA RÉPONSE — ANIMATION VARIANTE C
+   "Scale + fade depuis le haut"
+
+   Principe : la réponse part d'un état réduit (scaleY:0.6,
+   opacity:0, max-height:0) et s'étire vers le bas avec un
+   léger "pop" (dépassement du spring sur le scaleY).
+
+   Les 3 propriétés animées simultanément :
+   • max-height : contrôle la place réelle dans le flux
+   • transform:scaleY : donne le "pop" visuel
+   • opacity : fondu d'entrée discret
+
+   transform-origin:top center : l'étirement part du haut
+   (bord inférieur de .qhead), pas du centre de la carte.
+
+   Note : max-height doit être suffisamment grand pour
+   ne jamais tronquer le contenu. 800px couvre tous les cas.
    ───────────────────────────────────────────────────────── */
 .qbody {
-  display: none;
-  padding: 2px 14px 16px 52px;  /* 52px = largeur badge (28) + gap (10) + padding (14) */
+  max-height: 0;
+  overflow: hidden;
+  transform-origin: top center;
+  transform: scaleY(0.6);
+  opacity: 0;
+  transition:
+    max-height .38s cubic-bezier(.4,0,.2,1),
+    transform   .38s cubic-bezier(.34,1.4,.64,1),
+    opacity     .25s ease;
+}
+/* État ouvert : toutes les propriétés à leur valeur finale */
+.qcard.open .qbody {
+  max-height: 800px;
+  transform: scaleY(1);
+  opacity: 1;
+}
+
+/* Contenu intérieur de la réponse
+   padding-left: 58px = 12px (padding qhead) + 32px (qnum) + 12px (gap) + 2px */
+.qbody-inner {
+  padding: 0 14px 16px 58px;
+  border-top: 0.5px solid rgba(0,0,0,.06); /* Séparateur ultra-fin */
   font-size: 14px;
   line-height: 1.75;
-  color: #444;
+  color: rgba(0,0,0,.62);
 }
-.qcard.open .qbody { display: block; }
 
 /* Paragraphes dans la réponse */
-.qbody p { margin-bottom: 8px; }
+.qbody-inner p { margin-bottom: 8px; }
 
 /* Listes dans la réponse */
-.qbody ul { padding-left: 1.2rem; margin: 6px 0 10px; }
-.qbody li { margin-bottom: 4px; }
+.qbody-inner ul { padding-left: 1.2rem; margin: 6px 0 10px; }
+.qbody-inner li { margin-bottom: 4px; }
 
-/* Code inline dans la réponse — ex: `require()` */
-.qbody code {
+/* Code inline — ex: `require()` */
+.qbody-inner code {
   font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
   font-size: 12px;
   background: var(--code-bg);
@@ -309,21 +440,21 @@ body {
   border: 1px solid var(--red-pale);
 }
 
-/* Blocs de code multi-lignes — fond clair + filet rouge à gauche */
-.qbody pre {
+/* Blocs de code multi-lignes — fond rosé + filet rouge à gauche */
+.qbody-inner pre {
   font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
   font-size: 12px;
-  background: var(--code-bg);
-  border-left: 3px solid var(--code-left);                    /* Filet rouge caractéristique */
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;       /* Arrondi seulement à droite */
-  padding: 12px;
-  overflow-x: auto;                      /* Scroll horizontal si code trop large */
+  background: rgba(0,0,0,.03);          /* Plus discret que --code-bg sur glass */
+  border-left: 2px solid var(--red);
+  border-radius: 0;                      /* Pas d'arrondi sur une bordure unilatérale */
+  padding: 10px 12px;
+  overflow-x: auto;
   margin: 8px 0;
   line-height: 1.55;
   color: var(--code-txt);
-  white-space: pre-wrap;                 /* Retour à la ligne automatique */
+  white-space: pre-wrap;
   word-break: break-word;
-  -webkit-overflow-scrolling: touch;     /* Scroll fluide sur iOS */
+  -webkit-overflow-scrolling: touch;    /* Scroll fluide sur iOS */
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -338,25 +469,26 @@ body {
   font-size: 11px;
   padding: 3px 9px;
   border-radius: var(--radius-pill);
-  margin-bottom: 10px;
+  margin: 10px 0 8px;
   font-weight: 600;
 }
-.tag-hot  { background: var(--red-pale); color: var(--red-dark); }
-.tag-med  { background: #E6F1FB;         color: #185FA5; }
-.tag-easy { background: #EAF3DE;         color: #3B6D11; }
+.tag-hot  { background: rgba(227,83,54,.1); color: var(--red-dark); }
+.tag-med  { background: #E6F1FB;            color: #185FA5; }
+.tag-easy { background: #EAF3DE;            color: #3B6D11; }
 
-/* Badge thématique — petit label gris affiché après le texte de la question */
-/* Ex : "Qu'est-ce que Node.js ?"  [Node.js] */
+/* Badge thématique inline — petit label gris après le texte de la question.
+   Ex : "Qu'est-ce que Node.js ?"  [Node.js]
+   vertical-align:middle aligne avec le texte sur la même ligne de base. */
 .thematique-badge {
   display: inline-block;
   font-size: 11px;
   padding: 2px 8px;
   border-radius: var(--radius-pill);
-  background: var(--grey-light);
-  color: var(--text-mid);
+  background: rgba(0,0,0,.07);
+  color: rgba(0,0,0,.45);
   margin-left: 6px;
   font-weight: 500;
-  vertical-align: middle; /* Aligne avec le texte de la question */
+  vertical-align: middle;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -369,7 +501,7 @@ body {
 
 /* ─────────────────────────────────────────────────────────
    EN-TÊTE DE LA PAGE ADMIN
-   Titre "Administration des questions" + sous-titre descriptif.
+   Titre "Administration des questions" + sous-titre.
    ───────────────────────────────────────────────────────── */
 .admin-header { margin-bottom: 18px; }
 .admin-header h1 { font-size: 22px; font-weight: 700; color: var(--red); margin-bottom: 4px; }
@@ -380,9 +512,9 @@ body {
    Classe de base .btn + modificateurs sémantiques :
    .btn-primary   — action principale (fond rouge)
    .btn-secondary — action secondaire (contour gris)
-   .btn-danger    — suppression (contour rouge discret → fond rouge au hover)
-   .btn-xml       — export/import XML (fond code)
-   .btn-sm        — version compacte pour le tableau admin
+   .btn-danger    — suppression (contour rouge → fond rouge au hover)
+   .btn-xml       — export/import XML (fond code rosé)
+   .btn-sm        — version compacte pour le tableau admin (✏️ 🗑)
    ───────────────────────────────────────────────────────── */
 .btn {
   padding: 9px 16px;
@@ -395,19 +527,19 @@ body {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-.btn-primary   { background: var(--red);  color: var(--white); }
-.btn-primary:hover { background: var(--red-dark); }
-.btn-secondary { background: var(--white); color: var(--text-mid); border: 1.5px solid var(--grey-border); }
-.btn-secondary:hover { border-color: var(--red); color: var(--red); }
-.btn-danger    { background: #fff0ee; color: var(--red); border: 1.5px solid var(--red-pale); }
-.btn-danger:hover  { background: var(--red); color: var(--white); }
-.btn-xml       { background: var(--code-bg); color: var(--code-txt); border: 1.5px solid var(--code-left); }
-.btn-sm        { padding: 5px 10px; font-size: 12px; } /* Boutons ✏️ et 🗑 dans le tableau */
+.btn-primary             { background: var(--red);  color: var(--white); }
+.btn-primary:hover       { background: var(--red-dark); }
+.btn-secondary           { background: var(--white); color: var(--text-mid); border: 1.5px solid var(--grey-border); }
+.btn-secondary:hover     { border-color: var(--red); color: var(--red); }
+.btn-danger              { background: #fff0ee; color: var(--red); border: 1.5px solid var(--red-pale); }
+.btn-danger:hover        { background: var(--red); color: var(--white); }
+.btn-xml                 { background: var(--code-bg); color: var(--code-txt); border: 1.5px solid var(--code-left); }
+.btn-sm                  { padding: 5px 10px; font-size: 12px; }
 
 /* ─────────────────────────────────────────────────────────
    BARRE D'OUTILS ADMIN
-   Ligne flex avec tous les boutons d'action :
-   + Nouvelle question | ⬇ Export XML | ⬆ Import XML | 📋 Copier JS | filtres
+   Ligne flex avec : + Nouvelle question | ⬇ Export | ⬆ Import |
+                     📋 Copier JS (×3) | filtre projet | recherche
    ───────────────────────────────────────────────────────── */
 .admin-toolbar {
   display: flex;
@@ -419,8 +551,8 @@ body {
 
 /* ─────────────────────────────────────────────────────────
    TABLEAU ADMIN
-   Liste toutes les questions avec colonnes : Proj | Question |
-   Catégorie | Thématique | Fréquence | Actions (✏️ 🗑)
+   Colonnes : Proj | Question | Catégorie | Thématique |
+              Fréquence | Actions (✏️ 🗑)
    ───────────────────────────────────────────────────────── */
 .admin-table {
   width: 100%;
@@ -441,7 +573,7 @@ body {
   font-size: 12px;
   letter-spacing: .03em;
 }
-/* Cellules du tableau */
+/* Cellules */
 .admin-table td {
   padding: 10px 12px;
   border-bottom: 1px solid var(--grey-border);
@@ -449,7 +581,7 @@ body {
 }
 /* Zèbre : rangées paires en rose très clair */
 .admin-table tr:nth-child(even) td { background: var(--red-pale); }
-.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:last-child td      { border-bottom: none; }
 
 /* Cellule "Question" — tronquée avec "…" si trop longue */
 .admin-table .qtxt-cell {
@@ -462,8 +594,8 @@ body {
 .admin-table .actions { display: flex; gap: 6px; white-space: nowrap; }
 
 /* ─────────────────────────────────────────────────────────
-   BADGES DE PROJET dans le tableau admin
-   Petites étiquettes colorées : P1 (bleu) | P2 (vert) | P3 (violet)
+   BADGES DE PROJET (tableau admin)
+   Étiquettes colorées : P1 bleu | P2 vert | P3 violet
    ───────────────────────────────────────────────────────── */
 .proj-badge {
   display: inline-block;
@@ -472,26 +604,26 @@ body {
   font-size: 11px;
   font-weight: 700;
 }
-.badge-p1 { background: #dbeafe; color: #1e40af; } /* Bleu — Projet 1 Django */
-.badge-p2 { background: #d1fae5; color: #065f46; } /* Vert — Projet 2 Node.js */
+.badge-p1 { background: #dbeafe; color: #1e40af; } /* Bleu   — Projet 1 Django */
+.badge-p2 { background: #d1fae5; color: #065f46; } /* Vert   — Projet 2 Node.js */
 .badge-p3 { background: #f3e8ff; color: #6b21a8; } /* Violet — Transversales */
 
 /* ─────────────────────────────────────────────────────────
    OVERLAY + MODAL
    .overlay : fond semi-transparent qui couvre toute la page
-   .modal   : boîte blanche centrée (formulaire question ou connexion)
-   .overlay.hidden : masque tout (classe gérée par modal.js et auth.js)
+   .modal   : boîte blanche centrée (formulaire ou connexion)
+   .overlay.hidden : masque tout (géré par modal.js et auth.js)
    ───────────────────────────────────────────────────────── */
 .overlay {
   position: fixed;
-  inset: 0;           /* Équivalent de top/right/bottom/left: 0 */
+  inset: 0;             /* Équivalent de top/right/bottom/left: 0 */
   background: rgba(0,0,0,.45);
-  z-index: 200;       /* Passe devant la nav (z-index: 100) */
+  z-index: 200;         /* Passe devant la nav (z-index:100) */
   display: flex;
   align-items: flex-start;
   justify-content: center;
   padding: 16px;
-  overflow-y: auto;   /* Scroll si la modale dépasse la hauteur d'écran */
+  overflow-y: auto;     /* Scroll si la modale dépasse l'écran */
 }
 .overlay.hidden { display: none; }
 
@@ -500,7 +632,7 @@ body {
   background: var(--white);
   border-radius: var(--radius-lg);
   width: 100%;
-  max-width: 680px;   /* Largeur max sur desktop (380px pour la modale de connexion) */
+  max-width: 680px;     /* 380px pour la modale de connexion (inline) */
   margin-top: 20px;
   box-shadow: 0 8px 40px rgba(0,0,0,.18);
 }
@@ -509,7 +641,7 @@ body {
   background: var(--red);
   color: var(--white);
   padding: 16px 20px;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0; /* Arrondis seulement en haut */
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0; /* Arrondis en haut seulement */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -530,7 +662,6 @@ body {
   align-items: center;
   justify-content: center;
 }
-
 /* Corps de la modale — zone de formulaire */
 .modal-body { padding: 20px; }
 
@@ -538,7 +669,7 @@ body {
    CHAMPS DE FORMULAIRE (dans la modale)
    .field        : conteneur d'un label + son input
    .field label  : libellé en majuscules au-dessus du champ
-   .field-row    : deux champs côte à côte (ex: Projet | Fréquence)
+   .field-row    : deux champs côte à côte (Projet | Fréquence)
    ───────────────────────────────────────────────────────── */
 .field { margin-bottom: 14px; }
 .field label {
@@ -564,15 +695,16 @@ body {
   -webkit-appearance: none;
   font-family: inherit; /* Hérite la police du body (sinon monospace par défaut) */
 }
-.field textarea { min-height: 160px; resize: vertical; } /* Textarea redimensionnable verticalement */
+/* Textarea redimensionnable verticalement seulement */
+.field textarea { min-height: 160px; resize: vertical; }
 .field input:focus,
 .field select:focus,
 .field textarea:focus { outline: none; border-color: var(--red); }
 
-/* Grille 2 colonnes pour les paires de champs (Projet/Fréquence, Catégorie/Thématique) */
+/* Grille 2 colonnes pour les paires (Projet/Fréquence, Catégorie/Thématique) */
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-/* Pied de modale — ligne de boutons Annuler | Enregistrer */
+/* Pied de modale — boutons Annuler | Enregistrer */
 .modal-foot {
   padding: 14px 20px;
   border-top: 1px solid var(--grey-border);
@@ -583,9 +715,10 @@ body {
 
 /* ─────────────────────────────────────────────────────────
    TOAST (notification temporaire)
-   Apparaît en bas de page pendant ~2,8 secondes après une action.
+   Apparaît en bas de page pendant ~2,8 secondes.
    Ex : "✅ Question ajoutée." — "🗑 Question supprimée."
-   Géré par showToast() dans utils.js (opacity 0 → 1 → 0).
+   Géré par showToast() dans utils.js.
+   pointer-events:none : ne bloque pas les clics quand invisible.
    ───────────────────────────────────────────────────────── */
 .toast {
   position: fixed;
@@ -598,34 +731,35 @@ body {
   border-radius: var(--radius-pill);
   font-size: 14px;
   font-weight: 600;
-  z-index: 300;          /* Au-dessus de tout, y compris la modale */
-  opacity: 0;            /* Invisible par défaut */
+  z-index: 300;           /* Au-dessus de tout, y compris la modale */
+  opacity: 0;             /* Invisible par défaut */
   transition: opacity .3s;
-  pointer-events: none;  /* Ne bloque pas les clics quand invisible */
+  pointer-events: none;
   white-space: nowrap;
 }
-.toast.show { opacity: 1; } /* Rendu visible par JS (classList.add('show')) */
+/* Rendu visible par JS : classList.add('show') */
+.toast.show { opacity: 1; }
 
 /* ─────────────────────────────────────────────────────────
    UTILITAIRE
    .hidden : masque n'importe quel élément avec !important
    pour garantir la priorité sur tous les autres styles.
-   Utilisé pour : overlay de connexion, bouton Déconnexion,
-   input file (XML), etc.
+   Utilisé pour : overlay de connexion au chargement,
+   bouton Déconnexion hors page admin, input file XML.
    ───────────────────────────────────────────────────────── */
 .hidden { display: none !important; }
 
 /* ─────────────────────────────────────────────────────────
-   RESPONSIVE MOBILE (< 480px)
-   Ajustements pour les très petits écrans (iPhone SE, etc.) :
-   - Réponse des accordéons : supprime l'indentation gauche (52px → 14px)
-   - Code : police légèrement plus petite
-   - Question : police légèrement plus petite
-   - Formulaire : les paires de champs passent en colonne unique
+   RESPONSIVE MOBILE (< 480px — iPhone SE et équivalents)
+   • .qbody-inner : supprime l'indentation gauche (58px → 14px)
+     car le badge numéro n'est plus visible à cette largeur
+   • pre : police plus petite pour éviter le scroll horizontal
+   • .qtxt : légèrement réduit pour les longs intitulés
+   • .field-row : 2 colonnes → 1 colonne (Projet/Fréquence empilés)
    ───────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
-  .qbody { padding-left: 14px; }    /* Supprime l'alignement sur le badge numéro */
-  .qbody pre { font-size: 11px; }
+  .qbody-inner { padding-left: 14px; }
+  .qbody-inner pre { font-size: 11px; }
   .qtxt { font-size: 14px; }
-  .field-row { grid-template-columns: 1fr; } /* 2 colonnes → 1 colonne */
+  .field-row { grid-template-columns: 1fr; }
 }
