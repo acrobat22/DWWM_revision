@@ -140,15 +140,16 @@ function afficherStatistiques(questionsFiltrees) {
 }
 
 /**
- * Construit le HTML d'une carte accordéon.
+ * Construit le HTML d'une carte accordéon style liquid glass.
+ * Animation variante C : scale + fade depuis le haut.
  * @param {Object} question - La question à afficher.
- * @param {number} numeroAffichage - Numéro séquentiel affiché dans le badge.
+ * @param {number} numeroAffichage - Numéro séquentiel dans le badge.
  * @returns {string} HTML complet de la carte.
  */
 function construireCarte(question, numeroAffichage) {
-  const classeFrequence  = CLASSE_CSS_PAR_FREQUENCE[question.freq] || 'tag-easy';
-  const etiquetteFrequence = ETIQUETTE_PAR_FREQUENCE[question.freq] || '';
-  const badgeThematique  = question.thematique
+  const classeFrequence    = CLASSE_CSS_PAR_FREQUENCE[question.freq] || 'tag-easy';
+  const etiquetteFrequence = ETIQUETTE_PAR_FREQUENCE[question.freq]  || '';
+  const badgeThematique    = question.thematique
     ? `<span class="thematique-badge">${escHtml(question.thematique)}</span>`
     : '';
 
@@ -157,11 +158,19 @@ function construireCarte(question, numeroAffichage) {
       <div class="qhead" onclick="App.toggleCard('card-${question.id}')">
         <div class="qnum">${numeroAffichage}</div>
         <div class="qtxt">${question.question}${badgeThematique}</div>
-        <div class="qchev">⌄</div>
+        <div class="qchev" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
       </div>
       <div class="qbody">
-        <span class="tag ${classeFrequence}">${etiquetteFrequence}</span>
-        ${question.answer}
+        <div class="qbody-inner">
+          <span class="tag ${classeFrequence}">${etiquetteFrequence}</span>
+          ${question.answer}
+        </div>
       </div>
     </div>`;
 }
