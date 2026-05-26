@@ -26,6 +26,8 @@
     <button class="ptab active" id="ptab-p1">Projet 1 — Django</button>
     <button class="ptab"        id="ptab-p2">Projet 2 — Node.js / Socket.io</button>
     <button class="ptab"        id="ptab-p3">Transversales</button>
+    <!-- Onglet P4 : simule l'épreuve QCM + questions ouvertes en anglais du RE -->
+    <button class="ptab"        id="ptab-p4">📝 Questionnaire Pro</button>
   </div>
 
   <!-- Filtres -->
@@ -73,6 +75,13 @@
     <button class="btn btn-secondary"
             title="Génère le code JS des questions transversales à coller dans js/data-p3.js"
             onclick="App.copierCodeJS('p3')">📋 Copier JS — P3</button>
+    <button class="btn btn-secondary"
+            title="Génère le code JS des questions du Questionnaire Pro à coller dans js/data-p4.js"
+            onclick="App.copierCodeJS('p4')">📋 Copier JS — P4</button>
+    <!-- Bouton reset : recharge les données depuis les fichiers data-*.js (efface localStorage) -->
+    <button class="btn btn-reset"
+            title="Efface le localStorage et recharge toutes les questions depuis les fichiers sources"
+            onclick="App.reinitialiserDonnees()">🔄 Réinitialiser les données</button>
 
     <!-- Filtres admin -->
     <select class="filter-sel" id="a-proj">
@@ -80,6 +89,7 @@
       <option value="p1">Projet 1 — Django</option>
       <option value="p2">Projet 2 — Node.js</option>
       <option value="p3">Transversales</option>
+      <option value="p4">Questionnaire Pro</option>
     </select>
     <input class="search-input" id="a-search"
            placeholder="Rechercher…" style="max-width:220px" />
@@ -107,6 +117,7 @@
             <option value="p1">Projet 1 — Django</option>
             <option value="p2">Projet 2 — Node.js</option>
             <option value="p3">Transversales</option>
+            <option value="p4">Questionnaire Pro</option>
           </select>
         </div>
         <div class="field">

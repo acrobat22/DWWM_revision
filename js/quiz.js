@@ -19,10 +19,20 @@ const CLASSE_CSS_PAR_FREQUENCE = {
   easy: 'tag-easy',
 };
 
-/** Identifiant du projet actuellement affiché ('p1' ou 'p2'). */
+/**
+ * Identifiant du projet actuellement affiché.
+ * Valeurs possibles : 'p1' | 'p2' | 'p3' | 'p4'
+ * @type {string}
+ */
 let projetActif = 'p1';
 
-/** Initialise les onglets projet et les listeners de filtres. */
+/**
+ * Initialise les onglets projet et les listeners de filtres.
+ * Câble les 4 onglets (P1, P2, P3, P4) et les 4 filtres (recherche,
+ * catégorie, thématique, fréquence).
+ *
+ * @returns {void}
+ */
 export function initQuiz() {
   document.getElementById('ptab-p1').addEventListener('click', evenement =>
     changerDeProjet('p1', evenement.currentTarget)
@@ -32,6 +42,10 @@ export function initQuiz() {
   );
   document.getElementById('ptab-p3').addEventListener('click', evenement =>
     changerDeProjet('p3', evenement.currentTarget)
+  );
+  // Onglet P4 — Questionnaire Professionnel (ajouté d'après RE DWWM)
+  document.getElementById('ptab-p4').addEventListener('click', evenement =>
+    changerDeProjet('p4', evenement.currentTarget)
   );
   document.getElementById('q-search').addEventListener('input', renderQuiz);
   document.getElementById('f-cat').addEventListener('change', renderQuiz);

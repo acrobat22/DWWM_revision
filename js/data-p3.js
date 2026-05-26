@@ -546,5 +546,276 @@ Tu le rencontres surtout dans deux univers :</p>
 <p>Le sport / jeux — une équipe qui gagne 5 matchs d'affilée est sur un 'winning streak'. Un joueur qui rate plusieurs tirs de suite est sur un 'cold streak (série froide).</p>
 <p>L'idée centrale</p>
 <p>Ce qui compte c'est la continuité. Pas le total accumulé, mais le fait de ne pas avoir rompu la chaîne. C'est d'ailleurs pourquoi ça motive autant psychologiquement — perdre un streak de 30 jours fait plus mal que de n'avoir jamais commencé.<p>
-<p>Ce mot n'a pas de lien direct avec le développement web ou Django, c'est un terme anglais général.</p>`,freq:`easy`,}
+<p>Ce mot n'a pas de lien direct avec le développement web ou Django, c'est un terme anglais général.</p>`,freq:`easy`,},
+
+  // ══════════════════════════════════════════════════════════════════
+  //  NOUVELLES QUESTIONS — Ajoutées d'après le RE DWWM TP-01280 v04
+  //  Thèmes identifiés comme sous-représentés dans les fichiers data :
+  //    - Maquettage & UX (critères RE : enchainement maquettes, charte)
+  //    - Accessibilité RGAA (critère RE : "législation relative à l'accessibilité")
+  //    - Environnement de travail (critère RE évalué via QCM et entretien)
+  //    - Déploiement documenté (critère RE : scripts, procédure, DevOps)
+  //    - Éco-conception (critère RE explicite sur les interfaces statiques)
+  //    - SEO (critère RE : "Le site est visible sur les moteurs de recherche")
+  // ══════════════════════════════════════════════════════════════════
+
+  // ─── Maquettage & UX ──────────────────────────────────────────────
+
+  {id:"p3_ux_1",proj:"p3",num:44,category:"Maquettage & UX",thematique:"UX",
+  question:"Quelle est la différence entre wireframe, maquette et prototype ?",
+  answer:`<p>Ces trois livrables correspondent à des niveaux de fidélité croissants dans la conception d'interface :</p>
+<ul style="padding-left:1.2rem;margin:6px 0 10px">
+  <li><b>Wireframe (basse fidélité)</b> : schéma en niveaux de gris, sans couleurs ni images. Pose la structure (disposition des blocs, navigation). Outil : papier, Balsamiq.</li>
+  <li><b>Maquette (haute fidélité)</b> : représentation visuelle finale avec couleurs, typographie, images. Ne clique pas. Outil : Figma, Adobe XD.</li>
+  <li><b>Prototype interactif</b> : maquette cliquable qui simule la navigation. Permet de tester l'UX avant de coder. Outil : Figma (mode prototype).</li>
+</ul>
+<p><b>Conseil DWWM :</b> le RE demande de présenter les maquettes <em>et</em> un schéma de l'enchaînement des maquettes (user flow). Ce schéma montre comment l'utilisateur navigue d'un écran à l'autre.</p>
+<p><b>Critère RE :</b> "L'enchainement des maquettes est formalisé par un schéma."</p>`,freq:"hot"},
+
+  {id:"p3_ux_2",proj:"p3",num:45,category:"Maquettage & UX",thematique:"UX",
+  question:"Qu'est-ce que le Responsive Design et comment l'implémenter ?",
+  answer:`<p>Le Responsive Design adapte l'interface à la taille et au type d'écran (mobile, tablette, desktop).</p>
+<p><b>Techniques clés :</b></p>
+<ul style="padding-left:1.2rem;margin:6px 0 10px">
+  <li><b>Viewport meta tag</b> : indispensable sur mobile</li>
+  <li><b>Media queries CSS</b> : règles conditionnelles selon la largeur d'écran</li>
+  <li><b>Flexbox / Grid</b> : mise en page fluide</li>
+  <li><b>Unités relatives</b> : <code>%</code>, <code>rem</code>, <code>vw/vh</code> plutôt que <code>px</code> fixes</li>
+</ul>
+<pre>&lt;!-- Balise obligatoire dans &lt;head&gt; --&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+
+/* Mobile-first : on part du plus petit écran */
+.container { padding: 16px; }               /* mobile : défaut */
+
+@media (min-width: 768px) {                  /* tablette ≥ 768px */
+  .container { padding: 24px; }
+}
+
+@media (min-width: 1200px) {                 /* desktop ≥ 1200px */
+  .container { max-width: 1140px; margin: 0 auto; }
+}</pre>
+<p><b>Critère RE :</b> "L'interface s'adapte au type d'utilisation de l'application, y compris pour les équipements mobiles."</p>`,freq:"hot"},
+
+  {id:"p3_ux_3",proj:"p3",num:46,category:"Maquettage & UX",thematique:"UX",
+  question:"Qu'est-ce qu'une charte graphique et pourquoi la respecter dans un projet web ?",
+  answer:`<p>Une <b>charte graphique</b> est un ensemble de règles visuelles qui définissent l'identité d'une entreprise ou d'un produit.</p>
+<p><b>Elle comprend généralement :</b></p>
+<ul style="padding-left:1.2rem;margin:6px 0 10px">
+  <li><b>Palette de couleurs</b> : couleurs primaires, secondaires, neutres (ex: rouge #e35336, rouge foncé #c94420)</li>
+  <li><b>Typographie</b> : polices autorisées, tailles, graisses</li>
+  <li><b>Espacement</b> : marges, padding, grille de mise en page</li>
+  <li><b>Composants</b> : style des boutons, formulaires, cartes</li>
+  <li><b>Logo</b> : zones de protection, versions autorisées</li>
+</ul>
+<p>Respecter la charte = cohérence visuelle, reconnaissance de marque, professionnalisme.</p>
+<p><b>Critère RE :</b> "La charte graphique de l'entreprise est respectée."</p>`,freq:"hot"},
+
+  // ─── Accessibilité web (RGAA) ─────────────────────────────────────
+
+  {id:"p3_a11y_rgaa_1",proj:"p3",num:47,category:"Accessibilité web (a11y)",thematique:"RGAA",
+  question:"Qu'est-ce que le RGAA et pourquoi est-il obligatoire ?",
+  answer:`<p>Le <b>RGAA</b> (Référentiel Général d'Amélioration de l'Accessibilité) est le cadre légal français qui impose l'accessibilité numérique.</p>
+<p><b>Cadre légal :</b></p>
+<ul style="padding-left:1.2rem;margin:6px 0 10px">
+  <li><b>Obligatoire pour :</b> administrations publiques, services publics, entreprises > 250M€ de CA</li>
+  <li><b>Directive européenne</b> 2016/2102 (sites publics) + <b>European Accessibility Act</b> (2025, secteur privé)</li>
+  <li><b>RGAA version actuelle</b> : 4.1 (2021) — basé sur les WCAG 2.1 du W3C</li>
+</ul>
+<p><b>Les 4 principes WCAG (POUR) :</b></p>
+<ul style="padding-left:1.2rem;margin:6px 0 10px">
+  <li><b>P</b>erceptible — toute info doit être perçue par au moins un sens</li>
+  <li><b>O</b>pérable — toute interaction doit être réalisable (clavier, souris, vocal)</li>
+  <li><b>U</b>tilisable — contenu lisible et prévisible</li>
+  <li><b>R</b>obuste — compatible avec les technologies d'assistance (lecteurs d'écran)</li>
+</ul>
+<p><b>Critère RE :</b> "La règlementation en vigueur est respectée, y compris celle relative à l'accessibilité."</p>`,freq:"hot"},
+
+  {id:"p3_a11y_rgaa_2",proj:"p3",num:48,category:"Accessibilité web (a11y)",thematique:"RGAA",
+  question:"Quelles sont les règles d'accessibilité HTML les plus importantes à appliquer ?",
+  answer:`<p>Les règles essentielles pour une interface accessible :</p>
+<pre>&lt;!-- 1. Texte alternatif pour les images --&gt;
+&lt;img src="logo.png" alt="Logo de l'entreprise ACME"&gt;
+&lt;img src="decoration.png" alt=""&gt;  &lt;!-- alt vide si purement décoratif --&gt;
+
+&lt;!-- 2. Labels associés aux champs de formulaire --&gt;
+&lt;label for="email"&gt;Adresse e-mail *&lt;/label&gt;
+&lt;input type="email" id="email" name="email" required
+       aria-describedby="email-hint"&gt;
+&lt;p id="email-hint"&gt;Format : prenom@domaine.fr&lt;/p&gt;
+
+&lt;!-- 3. Boutons avec texte explicite (pas juste une icône) --&gt;
+&lt;button aria-label="Fermer la fenêtre"&gt;✕&lt;/button&gt;
+
+&lt;!-- 4. Structure sémantique (pas de div pour tout) --&gt;
+&lt;nav aria-label="Menu principal"&gt;...&lt;/nav&gt;
+&lt;main&gt;...&lt;/main&gt;
+&lt;footer&gt;...&lt;/footer&gt;
+
+&lt;!-- 5. Contraste suffisant : ratio minimum 4.5:1 (WCAG AA) --&gt;
+&lt;!-- Tester : https://webaim.org/resources/contrastchecker/ --&gt;</pre>
+<ul style="padding-left:1.2rem;margin:6px 0 10px">
+  <li>Navigation au clavier complète (Tab, Entrée, Échap)</li>
+  <li>Focus visible sur tous les éléments interactifs</li>
+  <li>Titre de page unique et descriptif</li>
+</ul>`,freq:"hot"},
+
+  // ─── Environnement de travail ──────────────────────────────────────
+
+  {id:"p3_env_1",proj:"p3",num:49,category:"Environnement de travail",thematique:"Outils",
+  question:"Qu'est-ce qu'un environnement virtuel Python et pourquoi en utiliser un ?",
+  answer:`<p>Un <b>environnement virtuel</b> (venv) est un dossier isolé qui contient sa propre installation Python et ses propres paquets, indépendants du système global.</p>
+<p><b>Problème résolu :</b> sans venv, tous les projets partagent les mêmes paquets — Projet A nécessite Django 3.2, Projet B nécessite Django 4.2 → conflit.</p>
+<pre># Créer un environnement virtuel
+python -m venv venv                  # Crée le dossier venv/
+
+# Activer (obligatoire avant d'installer ou d'exécuter)
+source venv/bin/activate             # Linux / macOS
+venv\\Scripts\\activate               # Windows PowerShell
+
+# Vérifier : le prompt change
+(venv) $ pip install django          # Installé uniquement dans venv/
+
+# Sauvegarder les dépendances
+pip freeze > requirements.txt
+
+# Désactiver
+deactivate</pre>
+<p>⚠️ Le dossier <code>venv/</code> doit être dans <code>.gitignore</code> — il est régénérable.</p>
+<p><b>Critère RE :</b> "Les outils de développement nécessaires sont installés et configurés."</p>`,freq:"hot"},
+
+  {id:"p3_env_2",proj:"p3",num:50,category:"Environnement de travail",thematique:"Outils",
+  question:"Qu'est-ce qu'un linter et pourquoi l'utiliser dans un projet web ?",
+  answer:`<p>Un <b>linter</b> est un outil d'analyse statique du code qui détecte les erreurs, les mauvaises pratiques et les violations de style <em>avant</em> l'exécution.</p>
+<p><b>Avantages :</b></p>
+<ul style="padding-left:1.2rem;margin:6px 0 10px">
+  <li>Détecte les bugs potentiels (variables non déclarées, imports inutilisés…)</li>
+  <li>Assure la cohérence du style dans une équipe</li>
+  <li>Accélère les revues de code</li>
+</ul>
+<pre># Python — flake8 ou pylint
+pip install flake8
+flake8 monapp/                # Analyse tous les fichiers .py
+
+# JavaScript / Node.js — ESLint
+npm install --save-dev eslint
+npx eslint src/               # Analyse le dossier src/
+
+# Intégration VS Code : extensions ESLint et Pylance
+# → souligne les erreurs en temps réel dans l'éditeur
+
+# Intégration CI/CD : bloquer un merge si le linter échoue</pre>
+<p><b>Critère RE :</b> "Les règles de nommage sont conformes aux normes de qualité de l'entreprise."</p>`,freq:"med"},
+
+  // ─── Déploiement documenté ────────────────────────────────────────
+
+  {id:"p3_deploy_doc_1",proj:"p3",num:51,category:"Déploiement & DevOps",thematique:"Déploiement",
+  question:"Comment documenter le déploiement d'une application web selon le RE DWWM ?",
+  answer:`<p>Le RE impose de rédiger une <b>procédure de déploiement</b> complète. Voici ce qu'elle doit contenir :</p>
+<ul style="padding-left:1.2rem;margin:6px 0 10px">
+  <li><b>Prérequis</b> : OS cible, versions (Python, Node, Nginx…), droits serveur</li>
+  <li><b>Variables d'environnement</b> : liste de toutes les clés .env nécessaires</li>
+  <li><b>Étapes pas à pas</b> : commandes ordonnées, commentées</li>
+  <li><b>Scripts de déploiement</b> : fichier bash ou Makefile qui automatise</li>
+  <li><b>Vérification</b> : comment tester que le déploiement a réussi</li>
+  <li><b>Rollback</b> : comment revenir à la version précédente en cas d'erreur</li>
+</ul>
+<pre>#!/bin/bash
+# deploy.sh — Script de déploiement de l'application
+set -e  # Arrête le script à la première erreur
+
+echo "=== 1. Récupération du code ==="
+git pull origin main
+
+echo "=== 2. Dépendances ==="
+pip install -r requirements.txt --quiet
+
+echo "=== 3. Migrations ==="
+python manage.py migrate --noinput
+
+echo "=== 4. Fichiers statiques ==="
+python manage.py collectstatic --noinput
+
+echo "=== 5. Redémarrage du service ==="
+sudo systemctl restart gunicorn
+
+echo "✅ Déploiement terminé"</pre>
+<p><b>Critère RE :</b> "La procédure de déploiement est rédigée ou mise à jour. Les scripts de déploiement sont écrits et documentés."</p>`,freq:"hot"},
+
+  {id:"p3_deploy_doc_2",proj:"p3",num:52,category:"Déploiement & DevOps",thematique:"CI/CD",
+  question:"Qu'est-ce que le CI/CD et comment s'inscrit-il dans une démarche DevOps ?",
+  answer:`<p><b>CI/CD</b> = Intégration Continue / Déploiement Continu.</p>
+<ul style="padding-left:1.2rem;margin:6px 0 10px">
+  <li><b>CI (Continuous Integration)</b> : à chaque push, un pipeline automatique exécute les tests, le linter, les audits de sécurité. Si tout passe → le code est validé.</li>
+  <li><b>CD (Continuous Deployment)</b> : si la CI réussit, le code est automatiquement déployé en production (ou staging).</li>
+</ul>
+<p><b>Outils courants :</b> GitHub Actions, GitLab CI, Jenkins.</p>
+<pre># .github/workflows/ci.yml — Pipeline GitHub Actions
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run linter
+        run: flake8 myapp/
+
+      - name: Run tests
+        run: python manage.py test
+
+      - name: Security audit
+        run: safety check</pre>
+<p><b>Critère RE :</b> "Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité liées au déploiement, y compris dans le cadre d'une démarche DevOps."</p>`,freq:"med"},
+
+  // ─── Éco-conception & SEO ─────────────────────────────────────────
+
+  {id:"p3_eco_1",proj:"p3",num:53,category:"Accessibilité web (a11y)",thematique:"Éco-conception",
+  question:"Qu'est-ce que l'éco-conception web et comment l'appliquer ?",
+  answer:`<p>L'<b>éco-conception web</b> consiste à réduire l'impact environnemental d'un site ou d'une application web.</p>
+<p><b>Critère RE explicite :</b> "L'interface est conforme à la maquette et les besoins en éco-conception sont pris en compte."</p>
+<p><b>Pratiques concrètes :</b></p>
+<ul style="padding-left:1.2rem;margin:6px 0 10px">
+  <li><b>Images optimisées</b> : format WebP, dimensions correctes, attribut <code>loading="lazy"</code></li>
+  <li><b>CSS/JS minifiés</b> : supprimer le code mort, utiliser le tree-shaking</li>
+  <li><b>Polices système</b> : préférer les polices système plutôt que les webfonts</li>
+  <li><b>Pagination</b> : charger les données par lots plutôt que tout en une fois</li>
+  <li><b>Cache HTTP</b> : éviter les re-téléchargements inutiles</li>
+</ul>
+<pre>&lt;!-- Images optimisées et éco-responsables --&gt;
+&lt;img src="photo.webp"
+     alt="Description"
+     loading="lazy"       &lt;!-- Chargement différé = économie réseau --&gt;
+     width="800"
+     height="600"&gt;       &lt;!-- Dimensions explicites = évite le layout shift --&gt;</pre>`,freq:"med"},
+
+  {id:"p3_seo_1",proj:"p3",num:54,category:"HTTP & Web",thematique:"SEO",
+  question:"Qu'est-ce que le SEO et quels éléments HTML l'influencent ?",
+  answer:`<p>Le <b>SEO</b> (Search Engine Optimization) regroupe les techniques qui améliorent le positionnement d'un site dans les résultats des moteurs de recherche.</p>
+<p><b>Critère RE :</b> "Le site est visible sur les moteurs de recherche et le référencement dépend du public."</p>
+<p><b>Éléments HTML qui impactent le SEO :</b></p>
+<pre>&lt;!-- Balise title : résumé cliquable dans Google (50-60 caractères) --&gt;
+&lt;title&gt;Entraînement DWWM — Quiz interactif oral professionnel&lt;/title&gt;
+
+&lt;!-- Meta description : texte sous le titre (150-160 caractères) --&gt;
+&lt;meta name="description"
+      content="Quiz de révision pour l'examen DWWM : front-end, back-end, sécurité."&gt;
+
+&lt;!-- Balises Hn : hiérarchie du contenu (H1 unique par page) --&gt;
+&lt;h1&gt;Quiz DWWM — Préparation à l'oral&lt;/h1&gt;
+&lt;h2&gt;Questions Front-end&lt;/h2&gt;
+
+&lt;!-- Alt des images : indexé par Google, aide aussi l'accessibilité --&gt;
+&lt;img src="schema.png" alt="Schéma MVC Django avec views et templates"&gt;
+
+&lt;!-- URLs lisibles --&gt;
+&lt;!-- ✅ /blog/apprendre-django/ → ❌ /page?id=42 --&gt;</pre>
+<p><b>Autres facteurs :</b> vitesse de chargement (Core Web Vitals), HTTPS obligatoire, responsive design, sitemap XML.</p>`,freq:"med"},
+
 ];

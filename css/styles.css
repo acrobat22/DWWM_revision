@@ -607,6 +607,26 @@ body {
 .badge-p1 { background: #dbeafe; color: #1e40af; } /* Bleu   — Projet 1 Django */
 .badge-p2 { background: #d1fae5; color: #065f46; } /* Vert   — Projet 2 Node.js */
 .badge-p3 { background: #f3e8ff; color: #6b21a8; } /* Violet — Transversales */
+.badge-p4 { background: #fff7ed; color: #9a3412; } /* Orange — Questionnaire Pro (palette RE) */
+
+/* ─────────────────────────────────────────────────────────
+   BOUTON RÉINITIALISATION (Admin)
+   Variante danger atténuée : fond rose pâle de la charte,
+   contour rouge-orangé, fond rouge au hover.
+   Positionné à la fin de la toolbar pour éviter les clics
+   accidentels.
+   ───────────────────────────────────────────────────────── */
+.btn-reset {
+  background: var(--red-pale);      /* #fde8e4 — fond rose très clair (charte) */
+  color: var(--red-dark);           /* #c94420 — texte rouge foncé (charte) */
+  border: 1.5px solid var(--red);   /* #e35336 — contour rouge-orangé (charte) */
+  font-weight: 600;
+}
+.btn-reset:hover {
+  background: var(--red);           /* Fond rouge-orangé au hover */
+  color: var(--white);
+  border-color: var(--red-dark);
+}
 
 /* ─────────────────────────────────────────────────────────
    OVERLAY + MODAL

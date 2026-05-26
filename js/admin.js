@@ -65,7 +65,9 @@ function construireLigneTableau(question) {
     ? `<span class="proj-badge badge-p1">P1</span>`
     : question.proj === 'p2'
       ? `<span class="proj-badge badge-p2">P2</span>`
-      : `<span class="proj-badge badge-p3">P3</span>`;
+      : question.proj === 'p4'
+        ? `<span class="proj-badge badge-p4">P4</span>`  // Questionnaire Professionnel
+        : `<span class="proj-badge badge-p3">P3</span>`;
 
   const badgeFrequence = `<span class="tag ${CLASSE_FREQUENCE[question.freq] || 'tag-easy'}" style="margin:0">
     ${ETIQUETTE_FREQUENCE[question.freq] || ''}
@@ -164,12 +166,12 @@ export async function copierCodeJS(projetCible) {
   const questionsProjet = questions.filter(question => question.proj === projetCible);
 
   if (!questionsProjet.length) {
-    showToast(`⚠️ Aucune question pour le ${projetCible === 'p1' ? 'Projet 1' : 'Projet 2'}.`);
+    showToast(`⚠️ Aucune question pour le ${projetCible === 'p1' ? 'Projet 1' : projetCible === 'p2' ? 'Projet 2' : projetCible === 'p3' ? 'Transversales' : 'Questionnaire Pro'}.`);
     return;
   }
 
   const nomConstante = projetCible === 'p1' ? 'DATA_P1' : projetCible === 'p2' ? 'DATA_P2' : 'DATA_P3';
-  const nomFichier   = projetCible === 'p1' ? 'data-p1.js' : projetCible === 'p2' ? 'data-p2.js' : 'data-p3.js';
+  const nomFichier   = projetCible === 'p1' ? 'data-p1.js' : projetCible === 'p2' ? 'data-p2.js' : projetCible === 'p3' ? 'data-p3.js' : 'data-p4.js';
 
   const lignesJS = questionsProjet.map(serialiserQuestionEnJS).join(',\n');
 
