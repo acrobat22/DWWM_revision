@@ -129,6 +129,13 @@ au chargement sans écraser les modifications existantes.
 **Réinitialisation manuelle :** le bouton _🔄 Réinitialiser les données_ dans
 l'admin efface le localStorage et recharge depuis les fichiers `data-*.js`.
 
+## Correctifs
+
+| Fichier        | Problème                                                                 | Cause                                                                                      | Correction appliquée                                      |
+|----------------|--------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|-----------------------------------------------------------|
+| `data-p4.js`   | `ReferenceError: Can't find variable: DB_PASSWORD`                       | `${DB_PASSWORD}` dans un template literal JS interprété comme interpolation JavaScript     | Échappement : `\${DB_PASSWORD}`                           |
+| `index.html`   | `ReferenceError: Can't find variable: App` sur les boutons de navigation | Le module `app.js` plantait (bug ci-dessus), empêchant `window.App` d'être assigné         | Guard défensif `window.App?.showPage()`sur les `onclick`  |
+
 ## Référence officielle
 
 Questions basées sur le **RE DWWM TP-01280 millésime 04**  
