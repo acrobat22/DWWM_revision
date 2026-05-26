@@ -512,9 +512,9 @@ services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_PASSWORD: \${DB_PASSWORD}   # Depuis .env
-      POSTGRES_USER:     \${DB_USER}
-      POSTGRES_DB:       \${DB_NAME}
+      POSTGRES_PASSWORD: motdepasse_secret   # Valeur de DB_PASSWORD dans .env
+      POSTGRES_USER:     monapp_user          # Valeur de DB_USER dans .env
+      POSTGRES_DB:       monapp_db            # Valeur de DB_NAME dans .env
     volumes:
       - postgres_data:/var/lib/postgresql/data  # Persistance des données
 

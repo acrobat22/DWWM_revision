@@ -133,7 +133,7 @@ l'admin efface le localStorage et recharge depuis les fichiers `data-*.js`.
 
 | Fichier        | Problème                                                                 | Cause                                                                                      | Correction appliquée                                      |
 |----------------|--------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|-----------------------------------------------------------|
-| `data-p4.js`   | `ReferenceError: Can't find variable: DB_PASSWORD`                       | `${DB_PASSWORD}` dans un template literal JS interprété comme interpolation JavaScript     | Échappement : `\${DB_PASSWORD}`                           |
+| `data-p4.js`   | `ReferenceError: Can't find variable: DB_PASSWORD`                       | `\${DB_PASSWORD}` dans un template literal JS — `\$` n'est pas suffisant sur tous les moteurs JS | Variables shell remplacées par des valeurs littérales d'exemple (`motdepasse_secret`, etc.) |
 | `index.html`   | `ReferenceError: Can't find variable: App` sur les boutons de navigation | Le module `app.js` plantait (bug ci-dessus), empêchant `window.App` d'être assigné         | Guard défensif `window.App?.showPage()`sur les `onclick`  |
 
 ## Référence officielle
